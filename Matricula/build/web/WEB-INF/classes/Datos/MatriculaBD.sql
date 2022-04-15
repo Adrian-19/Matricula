@@ -8,6 +8,10 @@ drop table Ciclo cascade constraints;
 drop table Grupo cascade constraints;
 drop table Usuarios cascade constraints;
 drop table Matriculas cascade constraints;
+drop sequence grupo_sequence;
+drop sequence curso_sequence;
+drop sequence ciclo_sequence;
+
 
 --        TABLES       -- TITLE
 
@@ -22,7 +26,7 @@ create table Carrera(
 
 create table Curso(
 	codigo_carrera varchar2(50),
-	numero_ciclo varchar2(50),
+	id_ciclo varchar2(50),
 	codigo_curso varchar2(50),
 	nombre varchar2(50),
 	creditos number(1),
@@ -55,23 +59,25 @@ create table Alumno(
 --
 
 create table Ciclo(
-	numero_ciclo varchar2(50),
+	id_ciclo varchar2(50),
 	annio varchar2(50),
 	numero varchar2(1),
 	fecha_inicio date,
 	fecha_final date,
-	constraints ciclo_pk primary key (numero_ciclo)
+	constraints ciclo_pk primary key (id_ciclo)
 );
-
+ALTER TABLE Ciclo
+ADD CONSTRAINT annio_ciclo UNIQUE (annio, numero);
 --
 
 create table Grupo(
+	id_grupo varchar2(50),
 	numero_grupo varchar2(50),
-	numero_ciclo varchar2(50),
+	id_ciclo varchar2(50),
 	codigo_curso varchar2 (50),
 	cedula_profesor varchar2 (50),
 	horario varchar2 (50),
-	constraints grupo_pk primary key (numero_grupo)
+	constraints grupo_pk primary key (id_grupo)
 );
 
 --
@@ -89,7 +95,7 @@ create table Usuarios(
 create table Matriculas(
 	numero_matricula varchar2(50),
 	cedula_alumno varchar2 (50),
-	numero_grupo varchar2 (50),
+	id_grupo varchar2 (50),
 	nota varchar2 (50),
 	constraints matricula_pk primary key (numero_matricula)
 );
@@ -102,8 +108,8 @@ foreign key(codigo_carrera)
 references Carrera(codigo_carrera);
 
 alter table Curso add constraint fk_curso_ciclo
-foreign key(numero_ciclo)
-references Ciclo(numero_ciclo);
+foreign key(id_ciclo)
+references Ciclo(id_ciclo);
 
 -- GRUPO --
 alter table Grupo add constraint fk_grupo_curso
@@ -111,8 +117,8 @@ foreign key(codigo_curso)
 references Curso (codigo_curso);
 
 alter table Grupo add constraint fk_grupo_ciclo
-foreign key(numero_ciclo)
-references Ciclo (numero_ciclo);
+foreign key(id_ciclo)
+references Ciclo (id_ciclo);
 
 alter table Grupo add constraint fk_grupo_profesor
 foreign key (cedula_profesor)
@@ -133,8 +139,48 @@ foreign key (cedula_alumno)
 references Alumno (cedula_alumno);
 
 alter table Matriculas add constraint fk_matriculas_grupo
-foreign key (numero_grupo)
-references Grupo (numero_grupo);
+foreign key (id_grupo)
+references Grupo (id_grupo);
+
+
+--        SEQUENCES       -- TITLE
+
+create sequence grupo_sequence;
+create sequence curso_sequence;
+create sequence ciclo_sequence;
+
+create or replace trigger grupo_on_insert
+	before insert on Grupo
+	for each row 
+begin
+	select grupo_sequence.nextval
+	into :new.id_grupo
+	from dual;
+END;
+/
+show error
+
+create or replace trigger curso_on_insert
+	before insert on Curso
+	for each row 
+begin
+	select curso_sequence.nextval
+	into :new.codigo_curso
+	from dual;
+END;
+/
+show error
+
+create or replace trigger ciclo_on_insert
+	before insert on Ciclo
+	for each row 
+begin
+	select ciclo_sequence.nextval
+	into :new.id_ciclo
+	from dual;
+END;
+/
+show error
 
 --        PROCEDURES       -- TITLE
 
@@ -202,7 +248,7 @@ show error
 
 -- CURSO -- 
 -- INSERT
-create or replace procedure insertar_curso(codigo_curso in curso.codigo_curso%type, codigo_carrera in curso.codigo_carrera%type, num_ciclo in curso.numero_ciclo%type, nombre in curso.nombre%type, creditos in curso.creditos%type, horas_semanales in curso.horas_semanales%type)
+create or replace procedure insertar_curso(codigo_curso in curso.codigo_curso%type, codigo_carrera in curso.codigo_carrera%type, num_ciclo in curso.id_ciclo%type, nombre in curso.nombre%type, creditos in curso.creditos%type, horas_semanales in curso.horas_semanales%type)
 as
 begin 
 insert into Curso values(codigo_curso, codigo_carrera, num_ciclo, nombre, creditos, horas_semanales);
@@ -232,7 +278,7 @@ as
 cursor_curso types.ref_cursor;
 begin
 open cursor_curso for
-select codigo_curso, codigo_carrera, numero_ciclo, nombre, creditos, horas_semanales from Curso where codigo_curso = s_codigo_curso;
+select codigo_curso, codigo_carrera, id_ciclo, nombre, creditos, horas_semanales from Curso where codigo_curso = s_codigo_curso;
 return cursor_curso;
 END;
 /
@@ -245,7 +291,7 @@ as
 cursor_curso types.ref_cursor;
 begin
 open cursor_curso for
-select codigo_curso, codigo_carrera, numero_ciclo, nombre, creditos, horas_semanales from curso;
+select codigo_curso, codigo_carrera, id_ciclo, nombre, creditos, horas_semanales from curso;
 return cursor_curso;
 END;
 /
@@ -368,7 +414,7 @@ as
 cursor_ciclo types.ref_cursor;
 begin 
 open cursor_ciclo for
-select numero_ciclo, annio, numero, fecha_inicio, fecha_final from ciclo;
+select id_ciclo, annio, numero, fecha_inicio, fecha_final from ciclo;
 return cursor_ciclo;
 END;
 /
