@@ -24,14 +24,9 @@ public class Servicio {
     
     protected void conectar() throws SQLException,ClassNotFoundException 
     {
-            //Class.forName("oracle.jdbc.driver.OracleDriver");
-       // try {
-            conexion= DriverManager.getConnection(
-                "jdbc:oracle:thin:@localhost:1521:XE", "system", "admin");
-            //conexion = getJdbcMydbsource();
-       /* } catch (NamingException ex) {
-            ex.printStackTrace();
-        }*/
+        Class.forName("oracle.jdbc.driver.OracleDriver");
+        conexion= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "system", "admin");
+      
         
     }
     
@@ -42,15 +37,5 @@ public class Servicio {
         }
     }
 
-    private Connection getJdbcMydbsource() throws NamingException {
-        Context c = new InitialContext();
-        try {
-            return ((DataSource) c.lookup("jdbc/Mydbsource")).getConnection();
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
+   
 }
