@@ -8,15 +8,11 @@ drop table Ciclo cascade constraints;
 drop table Grupo cascade constraints;
 drop table Usuarios cascade constraints;
 drop table Matriculas cascade constraints;
-
-drop sequence carrera_sequence;
-drop sequence curso_sequence;
-drop sequence profesor_sequence;
-drop sequence alumno_sequence;
-drop sequence ciclo_sequence;
 drop sequence grupo_sequence;
-drop sequence usuario_sequence;
-drop sequence matricula_sequence;
+drop sequence curso_sequence;
+drop sequence ciclo_sequence;
+drop sequence carrera_sequence;
+drop sequence profesor_sequence;
 
 
 --        TABLES       -- TITLE

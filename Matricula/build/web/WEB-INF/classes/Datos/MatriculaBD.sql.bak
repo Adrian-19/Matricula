@@ -16,7 +16,6 @@ drop sequence ciclo_sequence;
 --        TABLES       -- TITLE
 
 create table Carrera(
-	id varchar2(50),
 	codigo_carrera varchar2(50),
 	nombre varchar2(50),
 	titulo varchar2(50),
