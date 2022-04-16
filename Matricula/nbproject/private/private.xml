@@ -2,6 +2,9 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
+        <group/>
+=======
         <group>
             <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/Control/Carrera.java</file>
             <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/Datos/MatriculaBD.sql</file>
@@ -9,5 +12,6 @@
             <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/AccesoDatos/DAL.java</file>
             <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/LogicaNegocio/Carrera.java</file>
         </group>
+>>>>>>> 0a47c9bf23efa6a16f162350e83a574d932a753c
     </open-files>
 </project-private>
