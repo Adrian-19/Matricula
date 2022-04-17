@@ -5,7 +5,6 @@
  */
 package Control;
 
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -16,22 +15,23 @@ import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.Context;
 
-
-
-@Path("/carrera")
-public class Carrera {
+/**
+ *
+ * @author Jimmy Murillo
+ */
+@Path("/profesor")
+public class Profesor {
     @Context
     HttpServletRequest request;
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void registrarCarrera(LogicaNegocio.Carrera carrera){
+    public void registrarProfesor(LogicaNegocio.Profesor profesor){
         try{
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            service.insertarCarrera(carrera);
+            service.insertarProfesor(profesor);
         } catch (Exception e){
             throw new NotAcceptableException(); 
         }
     }
-
 }

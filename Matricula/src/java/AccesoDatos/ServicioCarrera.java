@@ -39,7 +39,7 @@ public class ServicioCarrera extends Servicio {
 
         try {
 
-            pstmt = conexion.prepareCall(insertarCarrera);;
+            pstmt = conexion.prepareCall(insertarCarrera);
             pstmt.setString(1, carrera.getCodigo());
             pstmt.setString(2, carrera.getNombre());
             pstmt.setString(3, carrera.getTitulo());
@@ -146,37 +146,5 @@ public class ServicioCarrera extends Servicio {
         return carrera;
     }
 
-    public void eliminarCarrera(String codigo) throws GlobalException, NoDataException {
-        try {
-            conectar();
-        } catch (ClassNotFoundException e) {
-            throw new GlobalException("No se ha localizado el driver");
-        } catch (SQLException e) {
-            throw new NoDataException("La base de datos no se encuentra disponible");
-        }
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conexion.prepareStatement(eliminarCarrera);
-            pstmt.setString(1, codigo);
-
-            int resultado = pstmt.executeUpdate();
-
-            if (resultado == 0) {
-                throw new NoDataException("No se realizo el borrado");
-            } else {
-                System.out.println("\nEliminación Satisfactoria!");
-            }
-        } catch (SQLException e) {
-            throw new GlobalException("Sentencia no valida");
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                desconectar();
-            } catch (SQLException e) {
-                throw new GlobalException("Estatutos invalidos o nulos");
-            }
-        }
-    }
+    
 }
