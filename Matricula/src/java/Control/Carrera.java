@@ -20,6 +20,7 @@ import javax.ws.rs.core.Context;
  *
  * @author XPC
  */
+
 @Path("/carrera")
 public class Carrera {
     @Context
@@ -31,6 +32,17 @@ public class Carrera {
         try{
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
             service.insertarCarrera(carrera);
+        } catch (Exception e){
+            throw new NotAcceptableException(); 
+        }
+    }
+    
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void modificarCarrera(LogicaNegocio.Carrera carrera){
+        try{
+            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
+            service.modificarCarrera(carrera);
         } catch (Exception e){
             throw new NotAcceptableException(); 
         }

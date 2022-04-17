@@ -6,6 +6,7 @@
 package AccesoDatos;
 
 import LogicaNegocio.Carrera;
+import LogicaNegocio.Curso;
 import java.util.Collection;
 
 /**
@@ -23,9 +24,11 @@ public class DAL {
     }
     
     private ServicioCarrera carreraDao;
+    private ServicioCurso cursoDao;
     
     public DAL (){
         carreraDao = new ServicioCarrera();
+        cursoDao = new ServicioCurso();
     }
     
     public Collection listarCarrera(){
@@ -61,5 +64,15 @@ public class DAL {
         } catch (Exception ex){
             System.out.println("Exception at eliminar");
         }
+    }
+    
+    public void modificarCarrera(Carrera carrera) throws Exception{
+        carreraDao.modificarCarrera(carrera);
+        System.out.println("modificada carrera!");
+    }
+    
+    // ------- CURSOS -------
+    public Collection listarCursos() throws Exception{
+        return cursoDao.listarCurso();
     }
 }

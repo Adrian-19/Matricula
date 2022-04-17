@@ -10,20 +10,32 @@ package LogicaNegocio;
  * @author XPC
  */
 public class Carrera {
+    String id;
     String codigo;
     String nombre;
     String titulo;
 
-    public Carrera(String codigo, String nombre, String titulo) {
+    public Carrera(String id, String codigo, String nombre, String titulo) {
+        this.id = id;
         this.codigo = codigo;
+        
         this.nombre = nombre;
         this.titulo = titulo;
     }
 
     public Carrera() {
+        this.id="";
         this.codigo = "";
         this.nombre = "";
         this.titulo = "";
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCodigo() {
@@ -54,6 +66,5 @@ public class Carrera {
     public String toString() {
         return "Carrera{" + "codigo=" + codigo + ", nombre=" + nombre + ", titulo=" + titulo + '}';
     }
-    
-    
+
 }
