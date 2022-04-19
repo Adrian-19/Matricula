@@ -23,7 +23,7 @@ public class ServicioProfesor extends Servicio {
     private static final String insertarProfesor = "{call insertar_profesor (?,?,?,?)}";
     private static final String listarProfesor = "{?=call listar_profesor()}";
     private static final String buscarProfesor = "{?=call buscar_profesor(?)}";
-    private static final String modificarProfesor = "{call modificar_profesor (?,?,?,?)}";
+    private static final String modificarProfesor = "{call modificar_profesor (?,?,?,?,?)}";
     private static final String eliminarProfesor = "{call eliminar_profesor(?)}";
     
     public void insertarProfesor(Profesor Profesor) throws GlobalException, NoDataException {
@@ -166,7 +166,8 @@ public class ServicioProfesor extends Servicio {
             pstmt.setString(1, Profesor.getId());
             pstmt.setString(2, Profesor.getCedula());
             pstmt.setString(3, Profesor.getNombre());
-            pstmt.setString(4, Profesor.getEmail());
+            pstmt.setString(4, Profesor.getTelefono());
+            pstmt.setString(5, Profesor.getEmail());
             int resultado = pstmt.executeUpdate();
 
             //si es diferente de 0 es porq si afecto un registro o mas

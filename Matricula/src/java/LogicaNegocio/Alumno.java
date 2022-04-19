@@ -15,20 +15,54 @@ import java.util.Objects;
 public class Alumno {
     
     private String id;
+    private String cedula;
     private String nombre;
     private String telefono;
-    private Date email;
+    private String email;
+    private Date fechaNacimiento;
     private String carreraId;
     private Carrera carrera;
     
     public Alumno(){}
 
-    public Alumno(String nombre, String telefono, Date email, String carreraId, Carrera carrera) {
+    
+    
+    public Alumno(String id, String cedula, String nombre, String telefono, String email, Date fechaNacimiento, String carreraId, Carrera carrera) {
+        this.id = id;
+        this.cedula = cedula;
         this.nombre = nombre;
         this.telefono = telefono;
         this.email = email;
+        this.fechaNacimiento = fechaNacimiento;
         this.carreraId = carreraId;
         this.carrera = carrera;
+    }
+
+    public Alumno(String cedula, String nombre, String telefono, String email, Date fechaNacimiento, String carreraId, Carrera carrera) {
+        this.cedula = cedula;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.email = email;
+        this.fechaNacimiento = fechaNacimiento;
+        this.carreraId = carreraId;
+        this.carrera = carrera;
+    }
+   
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+  
+    public String getCedula() {
+        return cedula;
+    }
+
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getId() {
@@ -55,11 +89,11 @@ public class Alumno {
         this.telefono = telefono;
     }
 
-    public Date getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(Date email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 

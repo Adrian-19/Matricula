@@ -4,6 +4,8 @@ set linesize 200
 set pagesize 200
 host cls
 
+
+
 drop table Carrera cascade constraints;
 drop table Curso cascade constraints;
 drop table Profesor cascade constraints;
@@ -12,6 +14,7 @@ drop table Ciclo cascade constraints;
 drop table Grupo cascade constraints;
 drop table Usuario cascade constraints;
 drop table matricula cascade constraints;
+
 
 drop sequence carrera_sequence;
 drop sequence curso_sequence;
@@ -42,7 +45,7 @@ create table Curso(
 	cicloId varchar2(5),
 	nombre varchar2(50),
 	creditos number(1),
-	horas_semanales number(3),
+	horasSemanales number(3),
 	constraints curso_pk primary key (id)
 );
 
@@ -50,7 +53,7 @@ create table Curso(
 
 create table Profesor(
 	id varchar2(5),
-	cedula varchar2(15),
+	cedula varchar2(15) UNIQUE,
 	nombre varchar2(50),
 	telefono varchar2(20),
 	email varchar2(50),
@@ -65,7 +68,7 @@ create table Alumno(
 	nombre varchar2(50),
 	telefono varchar2(20),
 	email varchar2(50),
-	fecha_nacimiento date,
+	fechaNacimiento date,
 	carreraId varchar2(5),
 	constraints alumno_pk primary key (id)
 );
@@ -76,8 +79,8 @@ create table Ciclo(
 	id varchar2(5),
 	annio varchar2(6),
 	numero varchar2(1),
-	fecha_inicio date,
-	fecha_final date,
+	fechaInicio date,
+	fechaFinal date,
 	activo number(1),
 	constraints ciclo_pk primary key (id)
 );
@@ -87,7 +90,7 @@ ADD CONSTRAINT annio_ciclo UNIQUE (annio, numero);
 
 create table Grupo(
 	id varchar2(5),
-	numero_grupo varchar2(10),
+	numeroGrupo varchar2(10),
 	cicloId varchar2(5),
 	cursoId varchar2 (5),
 	profesorId varchar2 (5),
@@ -226,10 +229,10 @@ show error
 
 -- CURSO -- 
 -- INSERT
-create or replace procedure insertar_curso(codigo in curso.codigo%type, carreraId in curso.carreraId%type, num_ciclo in curso.cicloId%type, nombre in curso.nombre%type, creditos in curso.creditos%type, horas_semanales in curso.horas_semanales%type)
+create or replace procedure insertar_curso(codigo in curso.codigo%type, carreraId in curso.carreraId%type, num_ciclo in curso.cicloId%type, nombre in curso.nombre%type, creditos in curso.creditos%type, horasSemanales in curso.horasSemanales%type)
 as
 begin 
-insert into Curso values(curso_sequence.nextval, codigo, carreraId, num_ciclo, nombre, creditos, horas_semanales);
+insert into Curso values(curso_sequence.nextval, codigo, carreraId, num_ciclo, nombre, creditos, horasSemanales);
 END;
 /
 show error
@@ -256,7 +259,7 @@ as
 cursor_curso types.ref_cursor;
 begin
 open cursor_curso for
-select id, codigo, carreraId, cicloId, nombre, creditos, horas_semanales from Curso where id = s_id;
+select id, codigo, carreraId, cicloId, nombre, creditos, horasSemanales from Curso where id = s_id;
 return cursor_curso;
 END;
 /
@@ -269,7 +272,7 @@ as
 cursor_curso types.ref_cursor;
 begin
 open cursor_curso for
-select curso.id, curso.codigo, curso.carreraId, curso.cicloId, curso.nombre, curso.creditos, curso.horas_semanales, carrera.id, carrera.codigo, carrera.nombre, carrera.titulo, ciclo.id, ciclo.annio, ciclo.numero, ciclo.fecha_inicio, ciclo.fecha_final, ciclo.activo 
+select curso.id, curso.codigo, curso.carreraId, curso.cicloId, curso.nombre, curso.creditos, curso.horasSemanales, carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo, ciclo.annio cicloAnnio, ciclo.numero cicloNumero, ciclo.fechaInicio cicloFechaInicio, ciclo.fechaFinal cicloFechaFinal, ciclo.activo cicloActivo
 from ((Curso
 inner join Carrera on curso.carreraId = carrera.id)
 inner join Ciclo on curso.cicloId = ciclo.id);
@@ -335,19 +338,19 @@ show error
 
 -- ALUMNO --
 -- INSERT
-create or replace procedure insertar_alumno(cedula in alumno.cedula%type, nombre in alumno.nombre%type, telefono in alumno.telefono%type, email in alumno.email%type, fecha_nacimiento in alumno.fecha_nacimiento%type, carrera in alumno.carreraId%type)
+create or replace procedure insertar_alumno(cedula in alumno.cedula%type, nombre in alumno.nombre%type, telefono in alumno.telefono%type, email in alumno.email%type, fechaNacimiento in alumno.fechaNacimiento%type, carrera in alumno.carreraId%type)
 as
 begin
-insert into Alumno values(alumno_sequence.nextval, cedula, nombre, telefono, email, fecha_nacimiento, carrera);
+insert into Alumno values(alumno_sequence.nextval, cedula, nombre, telefono, email, fechaNacimiento, carrera);
 END;
 /
 show error
 
 -- MODIFY
-create or replace procedure modificar_alumno(n_id in alumno.id%type, n_cedula in alumno.cedula%type, n_nombre in alumno.nombre%type, n_telefono in alumno.telefono%type, n_email in alumno.email%type, n_fecha_nacimiento in alumno.fecha_nacimiento%type, n_carrera in alumno.carreraId%type)
+create or replace procedure modificar_alumno(n_id in alumno.id%type, n_cedula in alumno.cedula%type, n_nombre in alumno.nombre%type, n_telefono in alumno.telefono%type, n_email in alumno.email%type, n_fechaNacimiento in alumno.fechaNacimiento%type, n_carrera in alumno.carreraId%type)
 as
 begin
-update alumno set cedula = n_cedula, nombre=n_nombre,telefono=n_telefono,email=n_email,fecha_nacimiento=n_fecha_nacimiento,carreraId=n_carrera where id = n_id;
+update alumno set cedula = n_cedula, nombre=n_nombre,telefono=n_telefono,email=n_email,fechaNacimiento=n_fechaNacimiento,carreraId=n_carrera where id = n_id;
 END;
 /
 show error
@@ -361,6 +364,15 @@ END;
 /
 show error
 
+create or replace procedure eliminar_alumno_matriculado(n_id in alumno.id%type)
+as
+begin
+delete from matricula where matricula.alumnoId=n_id;
+END;
+/
+show error
+
+
 -- SEARCH
 create or replace function buscar_alumno(s_id in alumno.id%type)
 return types.ref_cursor
@@ -368,21 +380,46 @@ as
 cursor_alumno types.ref_cursor;
 begin
 open cursor_alumno for
-select id, cedula, nombre, telefono, email, fecha_nacimiento, carreraId from alumno where id = s_id;
+select alumno.id alumnoId, alumno.cedula alumnoCedula, alumno.nombre alumnoNombre, alumno.telefono alumnoTelefono, alumno.email alumnoEmail, alumno.fechaNacimiento alumnoFechaNacimiento,
+carrera.id carreraId,carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo 
+from Alumno inner join Carrera on alumno.carreraId = carrera.id and alumno.id = s_id; 
 return cursor_alumno;
 END;
 /
 show error
 
 -- LIST
-create or replace function listar_alumno
+create or replace function listar_alumno 
 return types.ref_cursor
 as
 cursor_alumno types.ref_cursor;
 begin
 open cursor_alumno for
-select id, cedula, nombre, telefono, email, fecha_nacimiento, carreraId from alumno;
+select alumno.id alumnoId, alumno.cedula alumnoCedula, alumno.nombre alumnoNombre, alumno.telefono alumnoTelefono, alumno.email alumnoEmail, alumno.fechaNacimiento alumnoFechaNacimiento,
+carrera.id carreraId,carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo 
+from Alumno inner join Carrera on alumno.carreraId = carrera.id order by alumno.id; 
 return cursor_alumno;
+END;
+/
+show error
+
+create or replace function listar_cursos_alumno(s_alumnoId in matricula.alumnoId%type)
+return types.ref_cursor
+as
+cursor_matricula types.ref_cursor;
+begin
+open cursor_matricula for
+select curso.id cursoId, curso.codigo cursoCodigo, curso.nombre cursoNombre, curso.creditos cursoCreditos, curso.horasSemanales cursoHorasSemanales, 
+carrera.id carreraId, carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo, ciclo.annio cicloAnnio, 
+ciclo.id cicloId, ciclo.numero cicloNumero, ciclo.fechaInicio cicloFechaInicio, ciclo.fechaFinal cicloFechaFinal, ciclo.activo cicloActivo
+from (
+	(Matricula inner join Grupo on matricula.grupoId = grupo.id) 
+	inner join Curso on grupo.cursoId = curso.id
+	inner join Carrera on curso.carreraId = carrera.id
+	inner join Ciclo on curso.cicloId = ciclo.id
+	)
+where matricula.alumnoId = s_alumnoId;
+return cursor_matricula;
 END;
 /
 show error
@@ -390,10 +427,10 @@ show error
 -- CICLOS --
 -- LIST
 
-create or replace procedure insertar_ciclo(i_annio in ciclo.annio%type, i_numero in ciclo.numero%type, i_fecha_inicio in ciclo.fecha_inicio%type, i_fecha_final in ciclo.fecha_final%type, i_activo in ciclo.activo%type)
+create or replace procedure insertar_ciclo(i_annio in ciclo.annio%type, i_numero in ciclo.numero%type, i_fechaInicio in ciclo.fechaInicio%type, i_fechaFinal in ciclo.fechaFinal%type, i_activo in ciclo.activo%type)
 as 
 begin 
-insert into Ciclo values(ciclo_sequence.nextval, i_annio, i_numero, i_fecha_inicio, i_fecha_final, i_activo);
+insert into Ciclo values(ciclo_sequence.nextval, i_annio, i_numero, i_fechaInicio, i_fechaFinal, i_activo);
 END;
 /
 show error
@@ -404,7 +441,7 @@ as
 cursor_ciclo types.ref_cursor;
 begin 
 open cursor_ciclo for
-select id, annio, numero, fecha_inicio, fecha_final from ciclo;
+select id, annio, numero, fechaInicio, fechaFinal from ciclo;
 return cursor_ciclo;
 END;
 /
@@ -413,10 +450,10 @@ show error
 -- GRUPO --
 -- INSERT
 
-create or replace procedure insertar_grupo(i_numero_grupo in grupo.numero_grupo%type, i_cicloId in grupo.cicloId%type, i_cursoId in grupo.cursoId%type, i_profesorId in grupo.profesorId%type, i_horario in grupo.horario%type)
+create or replace procedure insertar_grupo(i_numeroGrupo in grupo.numeroGrupo%type, i_cicloId in grupo.cicloId%type, i_cursoId in grupo.cursoId%type, i_profesorId in grupo.profesorId%type, i_horario in grupo.horario%type)
 as 
 begin 
-insert into Grupo values(grupo_sequence.nextval, i_numero_grupo, i_cicloId, i_cursoId, i_profesorId, i_horario);
+insert into Grupo values(grupo_sequence.nextval, i_numeroGrupo, i_cicloId, i_cursoId, i_profesorId, i_horario);
 END;
 /
 show error
@@ -510,6 +547,9 @@ exec insertar_profesor('11113333', 'Nancy Muñoz', '12345678', 'nancy@gmail.com'
 exec insertar_profesor('11114444', 'Carlos Hernández', '12345678', 'carlos@gmail.com');
 exec insertar_profesor('11115555', 'Karla Jiménez', '12345678', 'karla@gmail.com');
 
+
+
+
 exec insertar_alumno('22223333', 'Danny Hernández', '12345678', 'danny@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '1');
 exec insertar_alumno('22224444', 'Sussett Alvarado', '12345678', 'suss@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '1');
 exec insertar_alumno('22225555', 'Joselin Pérez', '12345678', 'joss@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '2');
@@ -542,4 +582,22 @@ exec insertar_usuario('11115555', '1234', '3');
 exec insertar_usuario('1111', '1234', '1');
 exec insertar_usuario('2222', '1234', '2');
 
+exec insertar_matricula('M1','1','1',null);
+exec insertar_matricula('M1','1','3',null);
+exec insertar_matricula('M1','1','4',null);
+exec insertar_matricula('M1','1','5',null);
+
+
+
 commit;
+
+
+
+
+
+
+
+
+
+
+--inner join Ciclo on curso.cicloId = ciclo.id);

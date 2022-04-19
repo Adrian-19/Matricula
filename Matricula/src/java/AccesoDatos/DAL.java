@@ -5,8 +5,13 @@
  */
 package AccesoDatos;
 
+import LogicaNegocio.Alumno;
 import LogicaNegocio.Carrera;
+
 import LogicaNegocio.Profesor;
+
+import LogicaNegocio.Curso;
+
 import java.util.Collection;
 
 /**
@@ -25,11 +30,18 @@ public class DAL {
     }
 
     private ServicioCarrera carreraDao;
-    private ServicioProfesor profesorDao;
 
-    public DAL() {
+    private ServicioProfesor profesorDao;
+    
+    private ServicioCurso cursoDao;
+    
+    private ServicioAlumno alumnoDao;
+
+    public DAL (){
         carreraDao = new ServicioCarrera();
+        cursoDao = new ServicioCurso();
         profesorDao = new ServicioProfesor();
+        alumnoDao = new ServicioAlumno();
     }
 
     public Collection listarCarrera() {
@@ -56,6 +68,13 @@ public class DAL {
         }
         return carrera;
     }
+    
+    public void modificarCarrera(Carrera carrera) throws Exception{
+        carreraDao.modificarCarrera(carrera);
+        System.out.println("modificada carrera!");
+    }
+    
+    
 
     // PROFESOR
     
@@ -90,9 +109,59 @@ public class DAL {
         try {
             profesorDao.eliminarProfesor(codigo);
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             System.out.println("Exception at eliminar");
+            
         }
     }
     
+    // ALUMNO
     
+     public void insertarAlumno(Alumno alumno) throws Exception {
+        alumnoDao.insertarAlumno(alumno);
+    }
+
+    public Collection listarAlumno() {
+        try {
+            return alumnoDao.listarAlumno();
+        } catch (Exception ex) {
+            System.out.println("Exception at listar");
+        }
+        return (null);
+    }
+
+    public Alumno buscarAlumno(String id) {
+        Alumno alumno = new Alumno();
+        try {
+            alumno = alumnoDao.buscarAlumno(id);
+        } catch (Exception ex) {
+            System.out.println("Exception at buscar");
+        }
+        return alumno;
+    }
+    
+    public Collection listarCursosAlumno(String id)throws Exception {
+       return alumnoDao.listarCursosAlumno(id);
+    }
+
+    public void modificarAlumno(Alumno alumno) throws Exception {
+        alumnoDao.modificarAlumno(alumno);
+    }
+
+    public void eliminarAlumno(String id) {
+        try {
+            alumnoDao.eliminarAlumno(id);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("Exception at eliminar");
+            
+        }
+    }
+
+    
+    // ------- CURSOS -------
+    public Collection listarCursos() throws Exception{
+        return cursoDao.listarCurso();
+    }
+
 }
