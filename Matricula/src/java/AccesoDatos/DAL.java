@@ -14,6 +14,7 @@ import java.util.Collection;
  * @author XPC
  */
 public class DAL {
+
     private static DAL theInstance;
 
     public static DAL instance() {
@@ -22,57 +23,72 @@ public class DAL {
         }
         return theInstance;
     }
-    
+
     private ServicioCarrera carreraDao;
     private ServicioCurso cursoDao;
-    
-    public DAL (){
+    private ServicioCiclo cicloDao;
+
+    public DAL() {
         carreraDao = new ServicioCarrera();
         cursoDao = new ServicioCurso();
+        cicloDao = new ServicioCiclo();
     }
-    
-    public Collection listarCarrera(){
-        try{
+
+    public Collection listarCarrera() {
+        try {
             return (carreraDao.listarCarrera());
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("Exception");
         }
-        return(null);
+        return (null);
     }
-    
-    public void insertarCarrera(Carrera carrera) throws Exception{
-        
+
+    public void insertarCarrera(Carrera carrera) throws Exception {
+
         carreraDao.insertarCarrera(carrera);
         System.out.println("insertada la carrera");
-        
+
     }
-    
-    public Carrera buscarCarrera(String codigo){
+
+    public Carrera buscarCarrera(String codigo) {
         Carrera carrera = new Carrera();
-        try{
+        try {
             carrera = carreraDao.buscarCarrera(codigo);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("Exception at buscar");
         }
         return carrera;
     }
-    
-    public void eliminarCarrera(String codigo){
-        try{
-            carreraDao.eliminarCarrera(codigo);
-        } catch (Exception ex){
-            System.out.println("Exception at eliminar");
-        }
+
+    public void eliminarCarrera(String codigo) throws Exception {
+
+        carreraDao.eliminarCarrera(codigo);
+
     }
-    
-    public void modificarCarrera(Carrera carrera) throws Exception{
+
+    public void modificarCarrera(Carrera carrera) throws Exception {
         carreraDao.modificarCarrera(carrera);
-        System.out.println("modificada carrera!");
     }
-    
+
     // ------- CURSOS -------
-    public Collection listarCursos() throws Exception{
+    public void insertarCurso(Curso curso) throws Exception {
+        cursoDao.insertarCurso(curso);
+    }
+
+    public Collection listarCursos() throws Exception {
         return cursoDao.listarCurso();
+    }
+
+    public void modificarCurso(Curso curso) throws Exception {
+        cursoDao.modificarCurso(curso);
+    }
+
+    public void eliminarCurso(String id) throws Exception {
+        cursoDao.eliminarCurso(id);
+    }
+
+    // ------- CICLOS -------
+    public Collection listarCiclos() throws Exception {
+        return cicloDao.listarCiclo();
     }
 }
