@@ -32,16 +32,20 @@ public class DAL {
     private ServicioCarrera carreraDao;
 
     private ServicioProfesor profesorDao;
-    
+
     private ServicioCurso cursoDao;
-    
+
+    private ServicioCiclo cicloDao;
+
     private ServicioAlumno alumnoDao;
 
-    public DAL (){
+    public DAL() {
         carreraDao = new ServicioCarrera();
         cursoDao = new ServicioCurso();
         profesorDao = new ServicioProfesor();
         alumnoDao = new ServicioAlumno();
+        cicloDao = new ServicioCiclo();
+
     }
 
     public Collection listarCarrera() {
@@ -54,6 +58,7 @@ public class DAL {
     }
 
     public void insertarCarrera(Carrera carrera) throws Exception {
+
         carreraDao.insertarCarrera(carrera);
         System.out.println("insertada la carrera");
 
@@ -68,16 +73,13 @@ public class DAL {
         }
         return carrera;
     }
-    
-    public void modificarCarrera(Carrera carrera) throws Exception{
+
+    public void modificarCarrera(Carrera carrera) throws Exception {
         carreraDao.modificarCarrera(carrera);
         System.out.println("modificada carrera!");
     }
-    
-    
 
     // PROFESOR
-    
     public void insertarProfesor(Profesor profesor) throws Exception {
         profesorDao.insertarProfesor(profesor);
     }
@@ -111,13 +113,12 @@ public class DAL {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("Exception at eliminar");
-            
+
         }
     }
-    
+
     // ALUMNO
-    
-     public void insertarAlumno(Alumno alumno) throws Exception {
+    public void insertarAlumno(Alumno alumno) throws Exception {
         alumnoDao.insertarAlumno(alumno);
     }
 
@@ -139,9 +140,9 @@ public class DAL {
         }
         return alumno;
     }
-    
-    public Collection listarCursosAlumno(String id)throws Exception {
-       return alumnoDao.listarCursosAlumno(id);
+
+    public Collection listarCursosAlumno(String id) throws Exception {
+        return alumnoDao.listarCursosAlumno(id);
     }
 
     public void modificarAlumno(Alumno alumno) throws Exception {
@@ -154,14 +155,34 @@ public class DAL {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("Exception at eliminar");
-            
+
         }
     }
 
-    
+    public void eliminarCarrera(String codigo) throws Exception {
+        carreraDao.eliminarCarrera(codigo);
+    }
+
     // ------- CURSOS -------
-    public Collection listarCursos() throws Exception{
+    public void insertarCurso(Curso curso) throws Exception {
+        cursoDao.insertarCurso(curso);
+    }
+
+    public Collection listarCursos() throws Exception {
         return cursoDao.listarCurso();
+    }
+
+    public void modificarCurso(Curso curso) throws Exception {
+        cursoDao.modificarCurso(curso);
+    }
+
+    public void eliminarCurso(String id) throws Exception {
+        cursoDao.eliminarCurso(id);
+    }
+
+    // ------- CICLOS -------
+    public Collection listarCiclos() throws Exception {
+        return cicloDao.listarCiclo();
     }
 
 }

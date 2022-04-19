@@ -12,9 +12,18 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/Control/AlumnoController.java</file>
             <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/AccesoDatos/ServicioProfesor.java</file>
             <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/Control/ProfesorController.java</file>
+=======
+            <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/Control/CrossOriginResourceSharingFilter.java</file>
+            <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/Control/Curso.java</file>
+            <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/Control/RegisterApp.java</file>
+            <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/AccesoDatos/ServicioCarrera.java</file>
+            <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/AccesoDatos/ServicioCurso.java</file>
+            <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/AccesoDatos/DAL.java</file>
+>>>>>>> 585b8e7bbce783745a366317e51d45c72d9206ef
         </group>
     </open-files>
 </project-private>

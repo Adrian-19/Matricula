@@ -238,10 +238,13 @@ END;
 show error
 
 -- MODIFY
--- create or replace procedure modificar_carrera(n_codigo in curso.codigo%type, n_nombre in curso.nombre%type, n_titulo in carrera.titulo%type)
--- as
--- begin
--- update 
+create or replace procedure modificar_curso(n_id in curso.id%type, n_codigo in curso.codigo%type, n_carreraId in curso.carreraId%type, n_cicloId in curso.cicloId%type, n_nombre in curso.nombre%type, n_creditos in curso.creditos%type, n_horasSemanales in curso.horasSemanales%type)
+as
+begin
+update Curso set codigo = n_codigo, carreraId=n_carreraId, cicloId=n_cicloId, nombre = n_nombre, creditos = n_creditos, horasSemanales = n_horasSemanales where id = n_id;
+END;
+/
+show error
 
 -- DELETE
 create or replace procedure eliminar_curso(e_id in curso.id%type)
@@ -441,7 +444,7 @@ as
 cursor_ciclo types.ref_cursor;
 begin 
 open cursor_ciclo for
-select id, annio, numero, fechaInicio, fechaFinal from ciclo;
+select id, annio, numero, fechaInicio, fechaFinal, activo from ciclo;
 return cursor_ciclo;
 END;
 /
@@ -510,6 +513,24 @@ END;
 show error 
 
 
+-- LIST
+create or replace function listar_cursos_estudiantes(s_alumnoId in matricula.alumnoId%type)
+return types.ref_cursor
+as
+cursor_matricula types.ref_cursor;
+begin
+open cursor_matricula for
+select curso.id, curso.codigo, curso.carreraId, curso.cicloId, curso.nombre, curso.creditos, curso.horasSemanales
+from ((Matricula
+inner join Grupo on matricula.grupoId = grupo.id)
+inner join Curso on grupo.cicloId = curso.id)
+where matricula.alumnoId = s_alumnoId;
+return cursor_matricula;
+END;
+/
+show error
+
+
 --        TEST DATA       -- TITLE
 
 exec insertar_ciclo('2020', '1', to_date('06/03/2020', 'DD/MM/YYYY'), to_date('06/07/2020', 'DD/MM/YYYY'), 0);
@@ -517,44 +538,42 @@ exec insertar_ciclo('2021', '1', to_date('06/03/2021', 'DD/MM/YYYY'), to_date('0
 exec insertar_ciclo('2021', '2', to_date('06/08/2021', 'DD/MM/YYYY'), to_date('06/11/2021', 'DD/MM/YYYY'), 0);
 exec insertar_ciclo('2022', '1', to_date('06/03/2022', 'DD/MM/YYYY'), to_date('06/07/2022', 'DD/MM/YYYY'), 1);
 
-exec insertar_carrera('EIF', 'Ingeniería en Sistemas', 'Bachillerato');
-exec insertar_carrera('BIO', 'Biología', 'Bachillerato');
-exec insertar_carrera('LIX', 'Enseñanza del Inglés', 'Bachillerato');
-exec insertar_carrera('MAT', 'Enseñanza de la Matemática', 'Bachillerato');
+exec insertar_carrera('EIF', 'Ingenieria en Sistemas', 'Bachillerato');
+exec insertar_carrera('BIO', 'Biologia', 'Bachillerato');
+exec insertar_carrera('LIX', 'Ensenanza del Ingles', 'Bachillerato');
+exec insertar_carrera('MAT', 'Ensenanza de la Matematica', 'Bachillerato');
+exec insertar_carrera('DEP', 'Deportes', 'Bachillerato');
 
-exec insertar_curso('123','1', '1', 'Fundamentos de Informática', 4, 8);
-exec insertar_curso('456','2', '1', 'Química Orgánica I', 4, 8);
-exec insertar_curso('678','2', '1', 'Química Inorgánica I', 4, 8); 
+exec insertar_curso('123','1', '1', 'Fundamentos de Informatica', 4, 8);
+exec insertar_curso('456','2', '1', 'Quimica Organica I', 4, 8);
+exec insertar_curso('678','2', '1', 'Quimica Inorganica I', 4, 8); 
 -- 3
-exec insertar_curso('910','3', '2', 'Elocución', 4, 8);
-exec insertar_curso('111','4', '2', 'Geometría Analítica', 4, 8);
-exec insertar_curso('222','3', '2', 'Gramática Básica', 3, 6);
+exec insertar_curso('910','3', '2', 'Elocucion', 4, 8);
+exec insertar_curso('111','4', '2', 'Geometria Analitica', 4, 8);
+exec insertar_curso('222','3', '2', 'Gramatica Basica', 3, 6);
 -- 6
-exec insertar_curso('333','1', '3', 'Programación III', 4, 8);
-exec insertar_curso('444','4', '3', 'Geometría Euclídea II', 3, 6);
-exec insertar_curso('555','4', '3', 'Educación General', 3, 6);
+exec insertar_curso('333','1', '3', 'Programacion III', 4, 8);
+exec insertar_curso('444','4', '3', 'Geometria Euclidea II', 3, 6);
+exec insertar_curso('555','4', '3', 'Educacion General', 3, 6);
 -- 9
-exec insertar_curso('666','4', '4', 'Geometría Euclídea I', 4, 8);
-exec insertar_curso('777','1', '4', 'Programación III', 4, 8);
-exec insertar_curso('888','1', '4', 'Paradigmas de Programación', 4, 8);
-exec insertar_curso('999','2', '4', 'Bioquímica', 4, 8);
-exec insertar_curso('122','3', '4', 'Composición', 4, 8);
-exec insertar_curso('133','4', '4', 'Álgebra Lineal', 4, 8);
+exec insertar_curso('666','4', '4', 'Geometria Euclidea I', 4, 8);
+exec insertar_curso('777','1', '4', 'Programacion III', 4, 8);
+exec insertar_curso('888','1', '4', 'Paradigmas de Programacion', 4, 8);
+exec insertar_curso('999','2', '4', 'Bioquimica', 4, 8);
+exec insertar_curso('122','3', '4', 'Composicion', 4, 8);
+exec insertar_curso('133','4', '4', 'Algebra Lineal', 4, 8);
 -- 15
 
 exec insertar_profesor('11112222', 'Jorge Mendez', '12345678', 'jorge@gmail.com');
-exec insertar_profesor('11113333', 'Nancy Muñoz', '12345678', 'nancy@gmail.com');
-exec insertar_profesor('11114444', 'Carlos Hernández', '12345678', 'carlos@gmail.com');
-exec insertar_profesor('11115555', 'Karla Jiménez', '12345678', 'karla@gmail.com');
+exec insertar_profesor('11113333', 'Nancy Munoz', '12345678', 'nancy@gmail.com');
+exec insertar_profesor('11114444', 'Carlos Hernandez', '12345678', 'carlos@gmail.com');
+exec insertar_profesor('11115555', 'Karla Jimenez', '12345678', 'karla@gmail.com');
 
-
-
-
-exec insertar_alumno('22223333', 'Danny Hernández', '12345678', 'danny@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '1');
+exec insertar_alumno('22223333', 'Danny Hernandez', '12345678', 'danny@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '1');
 exec insertar_alumno('22224444', 'Sussett Alvarado', '12345678', 'suss@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '1');
-exec insertar_alumno('22225555', 'Joselin Pérez', '12345678', 'joss@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '2');
-exec insertar_alumno('22226666', 'David Rodríguez', '12345678', 'enano@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '2');
-exec insertar_alumno('22227777', 'Sidiana Hernández', '12345678', 'sidix@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '3');
+exec insertar_alumno('22225555', 'Joselin Perez', '12345678', 'joss@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '2');
+exec insertar_alumno('22226666', 'David Rodriguez', '12345678', 'enano@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '2');
+exec insertar_alumno('22227777', 'Sidiana Hernandez', '12345678', 'sidix@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '3');
 exec insertar_alumno('22228888', 'Jafeth Ledezma', '12345678', 'jerry@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '3');
 exec insertar_alumno('22229999', 'Samantha Garro', '12345678','sachi@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '4');
 exec insertar_alumno('22221010', 'Angie Torres', '12345678', 'nucita@gmail.com', to_date('06/07/2000', 'DD/MM/YYYY'), '4');
@@ -566,6 +585,8 @@ exec insertar_grupo('1', '3', '7', '3', '7:00 - 8:00p.m');
 exec insertar_grupo('5', '3', '8', '3', '5:00 - 6:00p.m');
 exec insertar_grupo('6', '2', '9', '4', '5:00 - 6:00p.m');
 exec insertar_grupo('9', '1', '1', '4', '5:00 - 6:00p.m');
+
+exec insertar_matricula('M1','1','1',null);
 
 exec insertar_usuario('22223333', '1234', '4');
 exec insertar_usuario('22224444', '1234', '4');

@@ -1,6 +1,19 @@
-import { Button, Table, Form, Input } from "antd";
+import {
+  Button,
+  Table,
+  Form,
+  Input,
+  Select,
+  notification,
+  InputNumber,
+  Popconfirm,
+} from "antd";
 import { useEffect, useState } from "react";
 import cursosAPI from "../../services/cursosAPI";
+import carrerasAPI from "../../services/carrerasAPI";
+import ciclosAPI from "../../services/ciclosAPI";
+
+const { Option } = Select;
 
 const data = [
   {
@@ -45,17 +58,19 @@ const data = [
   },
 ];
 
-const TablaCursos = () => {
+const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
   const [dataSource, setDataSource] = useState([]);
+  const [carrerasDataSource, setCarrerasDataSource] = useState([]);
+  const [ciclosDataSource, setCiclosDataSource] = useState([]);
   const [state, setState] = useState({
     isLoading: false,
     isError: false,
   });
   const [editingRow, setEditingRow] = useState(null);
+  
   const [form] = Form.useForm();
 
   useEffect(() => {
-    console.log("executing useEffect");
     setState((prev) => ({
       ...prev,
       isLoading: true,
@@ -64,11 +79,20 @@ const TablaCursos = () => {
       .getAll()
       .then((newData) => {
         setDataSource(newData);
-        console.log(newData);
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-        }));
+        carrerasAPI()
+          .getAll()
+          .then((newCarreras) => {
+            setCarrerasDataSource(newCarreras);
+            ciclosAPI()
+              .getAll()
+              .then((newCiclos) => {
+                setCiclosDataSource(newCiclos);
+                setState((prev) => ({
+                  ...prev,
+                  isLoading: false,
+                }));
+              });
+          });
       })
       .catch((error) => {
         setState((prev) => ({
@@ -77,14 +101,106 @@ const TablaCursos = () => {
           isError: true,
         }));
       });
-  }, []);
+  }, [needsRefresh]);
+
+  const onFinish = () => {
+    const values = form.getFieldsValue();
+    console.log(values);
+    form
+      .validateFields([
+        "nombre",
+        "codigo",
+        "carrera",
+        "ciclo",
+        "creditos",
+        "horas_semanales",
+      ])
+      .then(() => {
+        setState((prev) => ({
+          ...prev,
+          isLoading: true,
+        }));
+        cursosAPI()
+          .updateCurso({
+            id: editingRow,
+            nombre: values.nombre,
+            codigo: values.codigo,
+            carreraId: values.carrera,
+            cicloId: values.ciclo,
+            creditos: values.creditos,
+            horas_semanales: values.horas_semanales,
+          })
+          .then(() => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+            }));
+            notification.success({
+              message: "Actualización exitosa.",
+              description: "El dato se actualizó exitosamente.",
+            });
+            setEditingRow(null);
+            if (needsRefresh === true) {
+              setNeedsRefresh(false);
+            } else {
+              setNeedsRefresh(true);
+            }
+          })
+          .catch((error) => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              isError: true,
+            }));
+            setEditingRow(null);
+            notification.error({
+              message: "Un error ha ocurrido.",
+              description:
+                "El dato no fue actualizado. Por favor intente de nuevo.",
+            });
+          });
+      })
+      .catch((error) => {
+        notification.error({
+          message: "Datos inválidos",
+          description:
+            "El dato no fue actualizado. Por favor intente de nuevo.",
+        });
+      });
+  };
+
+  const onDelete = (id) => {
+    cursosAPI()
+    .removeCurso(id)
+    .then(()=>{
+      console.log("changed row")
+      notification.success({
+        message: "Actualización exitosa.",
+        description: "El dato se eliminó exitosamente.",
+      });
+      console.log("notif?")
+      if (needsRefresh === true) {
+        setNeedsRefresh(false);
+      } else {
+        setNeedsRefresh(true);
+      }
+      console.log("ending")
+    })
+    .catch((error) => {
+      notification.error({
+        message: "Datos inválidos",
+        description:
+          "Error",
+      });
+    });
+  };
 
   const columns = [
     {
       title: "Nombre",
       dataIndex: "nombre",
       render: (text, record) => {
-        if (editingRow === record.key) {
+        if (editingRow === record.id) {
           return (
             <Form.Item
               name="nombre"
@@ -94,6 +210,31 @@ const TablaCursos = () => {
                   message: "Ingrese el nombre",
                 },
               ]}
+            >
+              <Input value={record.id} />
+            </Form.Item>
+          );
+        } else {
+          return <p>{text}</p>;
+        }
+      },
+    },
+    {
+      title: "Código",
+      dataIndex: "codigo",
+      render: (text, record) => {
+        if (editingRow === record.id) {
+          return (
+            <Form.Item
+              name="codigo"
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: "",
+                },
+              ]}
+              required
             >
               <Input />
             </Form.Item>
@@ -105,47 +246,41 @@ const TablaCursos = () => {
     },
     {
       title: "Carrera",
-      dataIndex: "carrera.nombre",
       render: (text, record) => {
-        if (editingRow === record.key) {
+        if (editingRow === record.id) {
           return (
-            <Form.Item
-              name="carrera"
-              rules={[
-                {
-                  required: true,
-                  message: "Ingrese la carrera",
-                },
-              ]}
-            >
-              <Input />
+            <Form.Item name="carrera">
+              <Select>
+                {carrerasDataSource.map((carrera) => (
+                  <Option value={carrera.id}>
+                    {`${carrera.codigo} - ${carrera.nombre}`}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           );
         } else {
-          return <p>{text}</p>;
+          return <p>{`${record.carrera.codigo} - ${record.carrera.nombre}`}</p>;
         }
       },
     },
     {
       title: "Ciclo",
-      dataIndex: "ciclo.annio",
       render: (text, record) => {
-        if (editingRow === record.key) {
+        if (editingRow === record.id) {
           return (
-            <Form.Item
-              name="ciclo"
-              rules={[
-                {
-                  required: true,
-                  message: "Ingrese el ciclo",
-                },
-              ]}
-            >
-              <Input />
+            <Form.Item name="ciclo">
+              <Select>
+                {ciclosDataSource.map((ciclo) => (
+                  <Option value={ciclo.id}>
+                    {`${ciclo.numero} - ${ciclo.annio}`}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           );
         } else {
-          return <p>{text}</p>;
+          return <p>{`${record.ciclo.numero} - ${record.ciclo.annio}`}</p>;
         }
       },
     },
@@ -153,7 +288,7 @@ const TablaCursos = () => {
       title: "Créditos",
       dataIndex: "creditos",
       render: (text, record) => {
-        if (editingRow === record.key) {
+        if (editingRow === record.id) {
           return (
             <Form.Item
               name="creditos"
@@ -177,7 +312,7 @@ const TablaCursos = () => {
       dataIndex: "horas_semanales",
       width: "100",
       render: (text, record) => {
-        if (editingRow === record.key) {
+        if (editingRow === record.id) {
           return (
             <Form.Item
               name="horas_semanales"
@@ -204,31 +339,40 @@ const TablaCursos = () => {
             <Button
               type="link"
               onClick={() => {
-                setEditingRow(record.key);
+                setEditingRow(record.id);
                 form.setFieldsValue({
                   nombre: record.nombre,
-                  carrera: record.carrera,
+                  carrera: record.carrera.id,
+                  ciclo: record.ciclo.id,
+                  creditos: record.creditos,
+                  horas_semanales: record.horas_semanales,
+                  codigo: record.codigo,
                 });
               }}
             >
-              Edit
+              Editar
             </Button>
-            <Button type="link" htmlType="submit">
-              Save
+            <Button type="link" onClick={onFinish}>
+              Guardar
             </Button>
+            <Popconfirm
+              title="¿Está seguro que desea borrar este curso?"
+              onConfirm={()=> onDelete(record.id)}
+              okText="Sí"
+              cancelText="No"
+            >
+              <Button danger type="link">
+                Borrar
+              </Button>
+            </Popconfirm>
           </>
         );
       },
     },
   ];
-  const onFinish = (values) => {
-    const updatedDataSource = [...dataSource];
-    updatedDataSource.splice(editingRow, 1, { ...values, key: editingRow });
-    setDataSource(updatedDataSource);
-    setEditingRow(null);
-  };
+
   return (
-    <Form form={form} onFinish={onFinish}>
+    <Form form={form}>
       <Table columns={columns} dataSource={dataSource}></Table>
     </Form>
   );
