@@ -1,6 +1,6 @@
 import { Row, Card, Col } from "antd";
 import { Helmet } from "react-helmet";
-import TablaCursos from "../../components/TablaCursos";
+import TablaCursos from "components/TablaCursos";
 import {useState} from 'react'
 import { useParams } from "react-router-dom";
 

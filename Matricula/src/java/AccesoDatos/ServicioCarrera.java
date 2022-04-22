@@ -147,6 +147,33 @@ public class ServicioCarrera extends Servicio {
         }
         return carrera;
     }
+<<<<<<< HEAD
+=======
+
+    public void modificarCarrera(Carrera carrera) throws GlobalException, NoDataException
+	{
+		try
+		{
+			conectar();
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new GlobalException("No se ha localizado el driver");
+		}
+		catch (SQLException e)
+		{
+			throw new NoDataException("La base de datos no se encuentra disponible");
+		}
+		PreparedStatement pstmt = null;
+		try
+		{
+			pstmt = conexion.prepareStatement(modificarCarrera);
+			pstmt.setString(1, carrera.getId());
+			pstmt.setString(2, carrera.getCodigo());
+			pstmt.setString(3, carrera.getNombre());
+			pstmt.setString(4, carrera.getTitulo());
+			int resultado = pstmt.executeUpdate();
+>>>>>>> 14060e992ae95ea294ae111336daad61fb1af55b
 
     public void modificarCarrera(Carrera carrera) throws GlobalException, NoDataException {
         try {
@@ -218,4 +245,5 @@ public class ServicioCarrera extends Servicio {
             }
         }
     }
+
 }

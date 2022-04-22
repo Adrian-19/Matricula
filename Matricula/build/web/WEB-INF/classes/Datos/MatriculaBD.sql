@@ -4,6 +4,8 @@ set linesize 200
 set pagesize 200
 host cls
 
+
+
 drop table Carrera cascade constraints;
 drop table Curso cascade constraints;
 drop table Profesor cascade constraints;
@@ -12,6 +14,7 @@ drop table Ciclo cascade constraints;
 drop table Grupo cascade constraints;
 drop table Usuario cascade constraints;
 drop table matricula cascade constraints;
+
 
 drop sequence carrera_sequence;
 drop sequence curso_sequence;
@@ -50,7 +53,7 @@ create table Curso(
 
 create table Profesor(
 	id varchar2(5),
-	cedula varchar2(15),
+	cedula varchar2(15) UNIQUE,
 	nombre varchar2(50),
 	telefono varchar2(20),
 	email varchar2(50),
@@ -381,6 +384,15 @@ END;
 /
 show error
 
+create or replace procedure eliminar_alumno_matriculado(n_id in alumno.id%type)
+as
+begin
+delete from matricula where matricula.alumnoId=n_id;
+END;
+/
+show error
+
+
 -- SEARCH
 create or replace function buscar_alumno(s_id in alumno.id%type)
 return types.ref_cursor
@@ -388,21 +400,46 @@ as
 cursor_alumno types.ref_cursor;
 begin
 open cursor_alumno for
-select id, cedula, nombre, telefono, email, fechaNacimiento, carreraId from alumno where id = s_id;
+select alumno.id alumnoId, alumno.cedula alumnoCedula, alumno.nombre alumnoNombre, alumno.telefono alumnoTelefono, alumno.email alumnoEmail, alumno.fechaNacimiento alumnoFechaNacimiento,
+carrera.id carreraId,carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo 
+from Alumno inner join Carrera on alumno.carreraId = carrera.id and alumno.id = s_id; 
 return cursor_alumno;
 END;
 /
 show error
 
 -- LIST
-create or replace function listar_alumno
+create or replace function listar_alumno 
 return types.ref_cursor
 as
 cursor_alumno types.ref_cursor;
 begin
 open cursor_alumno for
-select id, cedula, nombre, telefono, email, fechaNacimiento, carreraId from alumno;
+select alumno.id alumnoId, alumno.cedula alumnoCedula, alumno.nombre alumnoNombre, alumno.telefono alumnoTelefono, alumno.email alumnoEmail, alumno.fechaNacimiento alumnoFechaNacimiento,
+carrera.id carreraId,carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo 
+from Alumno inner join Carrera on alumno.carreraId = carrera.id order by alumno.id; 
 return cursor_alumno;
+END;
+/
+show error
+
+create or replace function listar_cursos_alumno(s_alumnoId in matricula.alumnoId%type)
+return types.ref_cursor
+as
+cursor_matricula types.ref_cursor;
+begin
+open cursor_matricula for
+select curso.id cursoId, curso.codigo cursoCodigo, curso.nombre cursoNombre, curso.creditos cursoCreditos, curso.horasSemanales cursoHorasSemanales, 
+carrera.id carreraId, carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo, ciclo.annio cicloAnnio, 
+ciclo.id cicloId, ciclo.numero cicloNumero, ciclo.fechaInicio cicloFechaInicio, ciclo.fechaFinal cicloFechaFinal, ciclo.activo cicloActivo
+from (
+	(Matricula inner join Grupo on matricula.grupoId = grupo.id) 
+	inner join Curso on grupo.cursoId = curso.id
+	inner join Carrera on curso.carreraId = carrera.id
+	inner join Ciclo on curso.cicloId = ciclo.id
+	)
+where matricula.alumnoId = s_alumnoId;
+return cursor_matricula;
 END;
 /
 show error
@@ -583,4 +620,22 @@ exec insertar_usuario('11115555', '1234', '3');
 exec insertar_usuario('1111', '1234', '1');
 exec insertar_usuario('2222', '1234', '2');
 
+exec insertar_matricula('M1','1','1',null);
+exec insertar_matricula('M1','1','3',null);
+exec insertar_matricula('M1','1','4',null);
+exec insertar_matricula('M1','1','5',null);
+
+
+
 commit;
+
+
+
+
+
+
+
+
+
+
+--inner join Ciclo on curso.cicloId = ciclo.id);

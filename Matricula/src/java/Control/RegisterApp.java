@@ -21,9 +21,11 @@ public class RegisterApp extends Application {
 
         HashSet<Class<?>> classes = new HashSet<>();
         classes.add(Carrera.class); 
+        classes.add(ProfesorController.class);
         classes.add(Curso.class);
         classes.add(Ciclo.class);
         classes.add(CrossOriginResourceSharingFilter.class);
+
         return classes;
     }   
 }

@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="3">
+        <file>
+            <url>src/java/Control/Carrera.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>5</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/Control/AlumnoController.java</file>
+            <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/AccesoDatos/ServicioProfesor.java</file>
+            <file>file:/C:/Users/Jimmy%20Murillo/Desktop/Matricula/Matricula/src/java/Control/ProfesorController.java</file>
+=======
+            <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/Control/CrossOriginResourceSharingFilter.java</file>
+>>>>>>> 14060e992ae95ea294ae111336daad61fb1af55b
             <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/Control/Curso.java</file>
             <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/AccesoDatos/ServicioCarrera.java</file>
             <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/Control/Carrera.java</file>
             <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/AccesoDatos/DAL.java</file>
+<<<<<<< HEAD
             <file>file:/C:/Users/XPC/Documents/NetBeansProjects/Matricula/src/java/AccesoDatos/ServicioCurso.java</file>
+=======
+>>>>>>> 585b8e7bbce783745a366317e51d45c72d9206ef
+>>>>>>> 14060e992ae95ea294ae111336daad61fb1af55b
         </group>
     </open-files>
 </project-private>
