@@ -5,198 +5,283 @@ import {
   Input,
   Select,
   notification,
-  InputNumber,
   Popconfirm,
+  Col,
 } from "antd";
 import { useEffect, useState } from "react";
 import cursosAPI from "../../services/cursosAPI";
 import carrerasAPI from "../../services/carrerasAPI";
 import ciclosAPI from "../../services/ciclosAPI";
+import TableHeader from "../TableHeader";
 
 const { Option } = Select;
 
-const data = [
-  {
-    key: "1",
-    carrera: "EIF",
-    ciclo: "2020",
-    nombre: "Ingeniería I",
-    creditos: "4",
-    horas_semanales: "8",
-  },
-  {
-    key: "2",
-    carrera: "EIF",
-    ciclo: "2020",
-    nombre: "Ingeniería I",
-    creditos: "4",
-    horas_semanales: "8",
-  },
-  {
-    key: "3",
-    carrera: "EIF",
-    ciclo: "2020",
-    nombre: "Ingeniería I",
-    creditos: "4",
-    horas_semanales: "8",
-  },
-  {
-    key: "4",
-    carrera: "EIF",
-    ciclo: "2020",
-    nombre: "Ingeniería I",
-    creditos: "4",
-    horas_semanales: "8",
-  },
-  {
-    key: "5",
-    carrera: "EIF",
-    ciclo: "2020",
-    nombre: "Ingeniería I",
-    creditos: "4",
-    horas_semanales: "8",
-  },
-];
-
-const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
+const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
+  const backTo = "/carreras";
   const [dataSource, setDataSource] = useState([]);
   const [carrerasDataSource, setCarrerasDataSource] = useState([]);
   const [ciclosDataSource, setCiclosDataSource] = useState([]);
+  const [filterInput, setFilterInput] = useState("");
+  const [guardarMethod, setGuardarMethod] = useState(null);
   const [state, setState] = useState({
     isLoading: false,
     isError: false,
   });
+
+  const newCurso = {
+    name: "",
+    codigo: "",
+    carrera: 1,
+    ciclo: 1,
+    creditos: "",
+    horasSemanales: "",
+  };
+
   const [editingRow, setEditingRow] = useState(null);
-  
+
   const [form] = Form.useForm();
 
   useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      isLoading: true,
-    }));
-    cursosAPI()
-      .getAll()
-      .then((newData) => {
-        setDataSource(newData);
-        carrerasAPI()
-          .getAll()
-          .then((newCarreras) => {
-            setCarrerasDataSource(newCarreras);
-            ciclosAPI()
-              .getAll()
-              .then((newCiclos) => {
-                setCiclosDataSource(newCiclos);
-                setState((prev) => ({
-                  ...prev,
-                  isLoading: false,
-                }));
+    console.log("id: ", carreraId);
+    if (carreraId === null) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: true,
+      }));
+      cursosAPI()
+        .getAll()
+        .then((newData) => {
+          setDataSource(newData);
+          carrerasAPI()
+            .getAll()
+            .then((newCarreras) => {
+              newCarreras.forEach((element) => {
+                element.key = element.id;
               });
-          });
-      })
-      .catch((error) => {
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-          isError: true,
-        }));
-      });
+              setCarrerasDataSource(newCarreras);
+              ciclosAPI()
+                .getAll()
+                .then((newCiclos) => {
+                  setCiclosDataSource(newCiclos);
+                  setState((prev) => ({
+                    ...prev,
+                    isLoading: false,
+                  }));
+                });
+            });
+        })
+        .catch((error) => {
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+            isError: true,
+          }));
+        });
+    } else {
+      setState((prev) => ({
+        ...prev,
+        isLoading: true,
+      }));
+      cursosAPI()
+        .getAllPorCarrera(carreraId)
+        .then((newData) => {
+          setDataSource(newData);
+          carrerasAPI()
+            .getAll()
+            .then((newCarreras) => {
+              newCarreras.forEach((element) => {
+                element.key = element.id;
+              });
+              setCarrerasDataSource(newCarreras);
+              ciclosAPI()
+                .getAll()
+                .then((newCiclos) => {
+                  setCiclosDataSource(newCiclos);
+                  setState((prev) => ({
+                    ...prev,
+                    isLoading: false,
+                  }));
+                });
+            });
+        })
+        .catch((error) => {
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+            isError: true,
+          }));
+        });
+    }
   }, [needsRefresh]);
 
   const onFinish = () => {
     const values = form.getFieldsValue();
     console.log(values);
-    form
-      .validateFields([
-        "nombre",
-        "codigo",
-        "carrera",
-        "ciclo",
-        "creditos",
-        "horas_semanales",
-      ])
-      .then(() => {
-        setState((prev) => ({
-          ...prev,
-          isLoading: true,
-        }));
-        cursosAPI()
-          .updateCurso({
-            id: editingRow,
-            nombre: values.nombre,
-            codigo: values.codigo,
-            carreraId: values.carrera,
-            cicloId: values.ciclo,
-            creditos: values.creditos,
-            horas_semanales: values.horas_semanales,
-          })
-          .then(() => {
-            setState((prev) => ({
-              ...prev,
-              isLoading: false,
-            }));
-            notification.success({
-              message: "Actualización exitosa.",
-              description: "El dato se actualizó exitosamente.",
+    if (guardarMethod === 1) {
+      form
+        .validateFields([
+          "nombre",
+          "codigo",
+          "carrera",
+          "ciclo",
+          "creditos",
+          "horas_semanales",
+        ])
+        .then(() => {
+          setState((prev) => ({
+            ...prev,
+            isLoading: true,
+          }));
+          cursosAPI()
+            .updateCurso({
+              id: editingRow,
+              nombre: values.nombre,
+              codigo: values.codigo,
+              carreraId: values.carrera,
+              cicloId: values.ciclo,
+              creditos: values.creditos,
+              horas_semanales: values.horas_semanales,
+            })
+            .then(() => {
+              setState((prev) => ({
+                ...prev,
+                isLoading: false,
+              }));
+              notification.success({
+                message: "Actualización exitosa.",
+                description: "El dato se actualizó exitosamente.",
+              });
+              setEditingRow(null);
+              setGuardarMethod(null);
+              if (needsRefresh === true) {
+                setNeedsRefresh(false);
+              } else {
+                setNeedsRefresh(true);
+              }
+            })
+            .catch((error) => {
+              setState((prev) => ({
+                ...prev,
+                isLoading: false,
+                isError: true,
+              }));
+              setEditingRow(null);
+              notification.error({
+                message: "Un error ha ocurrido.",
+                description:
+                  "El dato no fue actualizado. Por favor intente de nuevo.",
+              });
             });
-            setEditingRow(null);
-            if (needsRefresh === true) {
-              setNeedsRefresh(false);
-            } else {
-              setNeedsRefresh(true);
-            }
-          })
-          .catch((error) => {
-            setState((prev) => ({
-              ...prev,
-              isLoading: false,
-              isError: true,
-            }));
-            setEditingRow(null);
-            notification.error({
-              message: "Un error ha ocurrido.",
-              description:
-                "El dato no fue actualizado. Por favor intente de nuevo.",
-            });
+        })
+        .catch((error) => {
+          notification.error({
+            message: "Datos inválidos",
+            description:
+              "El dato no fue actualizado. Por favor intente de nuevo.",
           });
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Datos inválidos",
-          description:
-            "El dato no fue actualizado. Por favor intente de nuevo.",
         });
-      });
+    } else if (guardarMethod === 2) {
+      form
+        .validateFields([
+          "nombre",
+          "codigo",
+          "carrera",
+          "ciclo",
+          "creditos",
+          "horas_semanales",
+        ])
+        .then(() => {
+          cursosAPI()
+            .insertarCurso({
+              id: editingRow,
+              nombre: values.nombre,
+              codigo: values.codigo,
+              carreraId: values.carrera,
+              cicloId: values.ciclo,
+              creditos: values.creditos,
+              horas_semanales: values.horas_semanales,
+            })
+            .then(() => {
+              notification.success({
+                message: "Actualización exitosa.",
+                description: "El dato se actualizó exitosamente.",
+              });
+              setEditingRow(null);
+              setGuardarMethod(null);
+              if (needsRefresh === true) {
+                setNeedsRefresh(false);
+              } else {
+                setNeedsRefresh(true);
+              }
+            })
+            .catch((error) => {
+              setState((prev) => ({
+                ...prev,
+                isLoading: false,
+                isError: true,
+              }));
+              setEditingRow(null);
+              notification.error({
+                message: "Un error ha ocurrido.",
+                description:
+                  "El dato no fue actualizado. Por favor intente de nuevo.",
+              });
+            });
+        })
+        .catch((error) => {
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+            isError: true,
+          }));
+          notification.error({
+            message: "Un error ha ocurrido.",
+            description: "Debe de ingresar todos los credenciales.",
+          });
+        });
+    }
+  };
+
+  const filterData = () => {
+    const data = dataSource;
+    if (filterInput === "") return data;
+    else if (!isNaN(filterInput))
+      return data.filter((element) => element.codigo.includes(filterInput));
+    return data.filter(
+      (element) =>
+        element.carrera.nombre
+          .toLowerCase()
+          .includes(filterInput.toLowerCase()) ||
+        element.nombre.toLowerCase().includes(filterInput.toLowerCase())
+    );
   };
 
   const onDelete = (id) => {
     cursosAPI()
-    .removeCurso(id)
-    .then(()=>{
-      console.log("changed row")
-      notification.success({
-        message: "Actualización exitosa.",
-        description: "El dato se eliminó exitosamente.",
+      .removeCurso(id)
+      .then(() => {
+        notification.success({
+          message: "Actualización exitosa.",
+          description: "El dato se eliminó exitosamente.",
+        });
+        if (needsRefresh === true) {
+          setNeedsRefresh(false);
+        } else {
+          setNeedsRefresh(true);
+        }
+      })
+      .catch((error) => {
+        notification.error({
+          message: "Eliminación incorrecta",
+          description:
+            "El curso todavía está asociado a uno o varios grupos. Por favor, remuévalos primero. ",
+        });
       });
-      console.log("notif?")
-      if (needsRefresh === true) {
-        setNeedsRefresh(false);
-      } else {
-        setNeedsRefresh(true);
-      }
-      console.log("ending")
-    })
-    .catch((error) => {
-      notification.error({
-        message: "Datos inválidos",
-        description:
-          "Error",
-      });
-    });
   };
 
   const columns = [
     {
+      key: 1,
       title: "Nombre",
       dataIndex: "nombre",
       render: (text, record) => {
@@ -220,6 +305,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
       },
     },
     {
+      key: 2,
       title: "Código",
       dataIndex: "codigo",
       render: (text, record) => {
@@ -245,6 +331,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
       },
     },
     {
+      key: 3,
       title: "Carrera",
       render: (text, record) => {
         if (editingRow === record.id) {
@@ -265,6 +352,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
       },
     },
     {
+      key: 4,
       title: "Ciclo",
       render: (text, record) => {
         if (editingRow === record.id) {
@@ -285,6 +373,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
       },
     },
     {
+      key: 5,
       title: "Créditos",
       dataIndex: "creditos",
       render: (text, record) => {
@@ -308,6 +397,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
       },
     },
     {
+      key: 6,
       title: "Horas Semanales",
       dataIndex: "horas_semanales",
       width: "100",
@@ -340,24 +430,49 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
               type="link"
               onClick={() => {
                 setEditingRow(record.id);
-                form.setFieldsValue({
-                  nombre: record.nombre,
-                  carrera: record.carrera.id,
-                  ciclo: record.ciclo.id,
-                  creditos: record.creditos,
-                  horas_semanales: record.horas_semanales,
-                  codigo: record.codigo,
-                });
+                setGuardarMethod(1);
+                if (editingRow === null) {
+                  form.setFieldsValue({
+                    nombre: record.nombre,
+                    carrera: record.carrera.id,
+                    ciclo: record.ciclo.id,
+                    creditos: record.creditos,
+                    horas_semanales: record.horas_semanales,
+                    codigo: record.codigo,
+                  });
+                } else {
+                  if (guardarMethod === 2) {
+                    setDataSource(
+                      dataSource.filter((curso) => curso.id !== editingRow)
+                    );
+                  }
+                  form.resetFields();
+                  setEditingRow(null);
+                }
               }}
             >
-              Editar
+              {editingRow === null
+                ? "Editar"
+                : editingRow === record.id
+                ? "Cancelar"
+                : "Editar"}
             </Button>
-            <Button type="link" onClick={onFinish}>
+            <Button
+              type="link"
+              onClick={onFinish}
+              hidden={
+                editingRow === null
+                  ? true
+                  : editingRow === record.id
+                  ? false
+                  : true
+              }
+            >
               Guardar
             </Button>
             <Popconfirm
               title="¿Está seguro que desea borrar este curso?"
-              onConfirm={()=> onDelete(record.id)}
+              onConfirm={() => onDelete(record.id)}
               okText="Sí"
               cancelText="No"
             >
@@ -372,9 +487,28 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh }) => {
   ];
 
   return (
-    <Form form={form}>
-      <Table columns={columns} dataSource={dataSource}></Table>
-    </Form>
+    <Col span="24" style={{ minHeight: "470px", height: "100%" }}>
+      <TableHeader
+        title={"Curso"}
+        setFilterInput={setFilterInput}
+        dataSource={dataSource}
+        setDataSource={setDataSource}
+        form={form}
+        editingRow={editingRow}
+        setEditingRow={setEditingRow}
+        setGuardarMethod={setGuardarMethod}
+        newObject={newCurso}
+        placeholder={"Buscar por código, nombre o carrera"}
+        backButton={carreraId !== null ? backTo : null}
+      />
+      <Form form={form}>
+        <Table
+          columns={columns}
+          dataSource={filterData()}
+          loading={state.isLoading}
+        ></Table>
+      </Form>
+    </Col>
   );
 };
 

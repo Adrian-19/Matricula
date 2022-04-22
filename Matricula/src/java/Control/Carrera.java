@@ -48,12 +48,6 @@ public class Carrera {
     public Collection getAll(){
         try{
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Credentials", "true");
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-            response.addHeader("Access-Control-Allow-Headers","X-Requested-With, Authorization, " +
-                "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
-            
             return service.listarCarrera();
         } catch (Exception e){
             throw new NotAcceptableException(); 

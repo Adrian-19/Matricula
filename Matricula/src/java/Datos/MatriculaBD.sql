@@ -281,6 +281,23 @@ END;
 /
 show error
 
+-- GETALLBYCARRERA
+create or replace function listar_curso_carrera(c_id in curso.carreraId%type)
+return types.ref_cursor
+as
+cursor_curso types.ref_cursor;
+begin
+open cursor_curso for
+select curso.id, curso.codigo, curso.carreraId, curso.cicloId, curso.nombre, curso.creditos, curso.horasSemanales, carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo, ciclo.annio cicloAnnio, ciclo.numero cicloNumero, ciclo.fechaInicio cicloFechaInicio, ciclo.fechaFinal cicloFechaFinal, ciclo.activo cicloActivo
+from ((Curso
+inner join Carrera on curso.carreraId = carrera.id)
+inner join Ciclo on curso.cicloId = ciclo.id)
+where curso.carreraId = c_id;
+return cursor_curso;
+END;
+/
+show error
+
 -- PROFESOR --
 -- INSERT
 create or replace procedure insertar_profesor(cedula in profesor.cedula%type, nombre in profesor.nombre%type, telefono in profesor.telefono%type, email in profesor.email%type)

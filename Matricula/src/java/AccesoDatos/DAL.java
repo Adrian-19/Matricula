@@ -86,6 +86,10 @@ public class DAL {
     public void eliminarCurso(String id) throws Exception {
         cursoDao.eliminarCurso(id);
     }
+    
+    public Collection listarCursoCarrera(String id) throws Exception{
+        return cursoDao.listarCursoCarrera(id);
+    }
 
     // ------- CICLOS -------
     public Collection listarCiclos() throws Exception {

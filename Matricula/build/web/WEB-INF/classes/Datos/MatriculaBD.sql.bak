@@ -483,7 +483,7 @@ as
 cursor_matricula types.ref_cursor;
 begin
 open cursor_matricula for
-select *
+select curso.id, curso.codigo, curso.carreraId, curso.cicloId, curso.nombre, curso.creditos, curso.horasSemanales
 from ((Matricula
 inner join Grupo on matricula.grupoId = grupo.id)
 inner join Curso on grupo.cicloId = curso.id)
