@@ -10,6 +10,7 @@ import RutaPrivada from "components/RutaPrivada";
 import AutenticacionContextProvider from "context/AutenticacionContext";
 import HomePage from "pages/Home";
 import MantenimientoProfesores from "pages/MantenimientoProfesores";
+import MantenimientoAlumnos from "pages/MantenimientoAlumnos";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
             <MainLayout>
               <Switch>
                 <RutaPrivada rolesPermitidos={["publico"]} exact path="/" component={HomePage}/>
-                <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/mantenimientoProfesores" component={MantenimientoProfesores}/>
+                <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/profesores" component={MantenimientoProfesores}/>
+                <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/alumnos" component={MantenimientoAlumnos}/>
                 <Route path={"*"} component={() => <h1>Not found</h1>} />
               </Switch>
             </MainLayout>

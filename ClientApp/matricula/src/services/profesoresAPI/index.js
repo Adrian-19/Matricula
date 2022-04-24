@@ -58,7 +58,6 @@ function modificarProfesor({id,cedula,nombre,telefono,email}) {
 
 function eliminarProfesor({id}) {
   const URL = `${API_URL}/profesor/${id}`
-  console.log("PROFESOR A ELIMINAR:", id)
   const requestInfo = {
     method: 'DELETE',
     headers: {

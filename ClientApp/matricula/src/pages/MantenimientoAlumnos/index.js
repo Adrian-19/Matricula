@@ -59,7 +59,7 @@ const EditableCell = ({
   );
 };
 
-function MantenimientoProfesores() {
+function MantenimientoAlumnos() {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
@@ -322,4 +322,4 @@ function MantenimientoProfesores() {
   );
 };
 
-export default MantenimientoProfesores;
+export default MantenimientoAlumnos;

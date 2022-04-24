@@ -87,8 +87,10 @@ public class DAL {
     }
 
     // PROFESOR
-    public void insertarProfesor(Profesor profesor) throws Exception {
+    public Profesor insertarProfesor(Profesor profesor) throws Exception {
         profesorDao.insertarProfesor(profesor);
+        Profesor nuevoProfesor = profesorDao.buscarProfesor(profesor.getCedula());
+        return nuevoProfesor;
     }
 
     public Collection listarProfesor() {
