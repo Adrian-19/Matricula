@@ -153,6 +153,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
               });
               setEditingRow(null);
               setGuardarMethod(null);
+              form.resetFields();
               if (needsRefresh === true) {
                 setNeedsRefresh(false);
               } else {
@@ -166,6 +167,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
                 isError: true,
               }));
               setEditingRow(null);
+              form.resetFields()
               notification.error({
                 message: "Un error ha ocurrido.",
                 description:
@@ -208,6 +210,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
               });
               setEditingRow(null);
               setGuardarMethod(null);
+              form.resetFields();
               if (needsRefresh === true) {
                 setNeedsRefresh(false);
               } else {
@@ -221,6 +224,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
                 isError: true,
               }));
               setEditingRow(null);
+              form.resetFields()
               notification.error({
                 message: "Un error ha ocurrido.",
                 description:
@@ -336,7 +340,15 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
       render: (text, record) => {
         if (editingRow === record.id) {
           return (
-            <Form.Item name="carrera">
+            <Form.Item
+              name="carrera"
+              rules={[
+                {
+                  required: true,
+                  message: "Seleccione una carrera",
+                },
+              ]}
+            >
               <Select>
                 {carrerasDataSource.map((carrera) => (
                   <Option value={carrera.id}>
@@ -357,7 +369,15 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
       render: (text, record) => {
         if (editingRow === record.id) {
           return (
-            <Form.Item name="ciclo">
+            <Form.Item
+              name="ciclo"
+              rules={[
+                {
+                  required: true,
+                  message: "Seleccione un ciclo",
+                },
+              ]}
+            >
               <Select>
                 {ciclosDataSource.map((ciclo) => (
                   <Option value={ciclo.id}>

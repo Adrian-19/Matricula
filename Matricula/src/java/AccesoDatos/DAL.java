@@ -7,6 +7,7 @@ package AccesoDatos;
 
 import LogicaNegocio.Alumno;
 import LogicaNegocio.Carrera;
+import LogicaNegocio.Ciclo;
 
 import LogicaNegocio.Profesor;
 
@@ -39,6 +40,8 @@ public class DAL {
     private ServicioCiclo cicloDao;
 
     private ServicioAlumno alumnoDao;
+    
+    private ServicioGrupo grupoDao;
 
     private ServicioAutenticacion autenticacionDao;
 
@@ -48,6 +51,7 @@ public class DAL {
         profesorDao = new ServicioProfesor();
         alumnoDao = new ServicioAlumno();
         cicloDao = new ServicioCiclo();
+        grupoDao = new ServicioGrupo();
         autenticacionDao = new ServicioAutenticacion();
     }
 
@@ -189,6 +193,24 @@ public class DAL {
     public Collection listarCiclos() throws Exception {
         return cicloDao.listarCiclo();
     }
+    
+    public void modificarCiclo(Ciclo ciclo) throws Exception{
+        cicloDao.modificarCiclo(ciclo);
+    }
+    
+    public void insertarCiclo(Ciclo ciclo) throws Exception{
+        cicloDao.insertarCiclo(ciclo);
+    }
+    
+    public void eliminarCiclo(String id) throws Exception{
+        cicloDao.eliminarCiclo(id);
+    }
+    
+    // ------- GRUPOS -------
+    
+    public Collection listarGrupoProfesor(String id) throws Exception{
+        return grupoDao.listarGrupoProfesor(id);
+    }
 
     // ------- AUTENTICACION -------
     public Usuario login(String cedula, String clave) throws Exception {
@@ -203,5 +225,4 @@ public class DAL {
         }
         return user;
     }
-
 }

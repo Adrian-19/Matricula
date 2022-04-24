@@ -36,6 +36,7 @@ export const AppRoutes = [
     subroutes: null,
     key: '4',
     rolesAllowed: ["Administrador"]
+
   },{
     name: "Alumnos",
     path: "alumnos",
@@ -43,7 +44,31 @@ export const AppRoutes = [
     subroutes: null,
     key: '100',
     rolesAllowed: ["Administrador"]
-  }
+  },{
+    name: "Mantenimiento de Cursos",
+    path: "cursos",
+    icon: null,
+    subroutes: null,
+    key: '5',
+    rolesAllowed: ["Administrador"]
+  },
+  {
+    name: "Mantenimiento de Carreras",
+    path: "carreras",
+    icon: null,
+    subroutes: null,
+    key: '6',
+    rolesAllowed: ["Administrador"]
+  },
+  {
+    name: "Mantenimiento de ciclos",
+    path: "ciclos",
+    icon: null,
+    subroutes: null,
+    key: '7',
+    rolesAllowed: ["Administrador"]
+  },
+
 ]
 
 export function hasAccess(rolesAllowed, userRole) {

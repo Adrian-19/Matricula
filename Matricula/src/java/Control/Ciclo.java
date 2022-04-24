@@ -7,9 +7,14 @@ package Control;
 
 import java.util.Collection;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAcceptableException;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -23,18 +28,45 @@ public class Ciclo {
     @Context
     HttpServletResponse response;
     
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void registrarCiclo(LogicaNegocio.Ciclo ciclo){
+        try{
+            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
+            service.insertarCiclo(ciclo);
+        } catch (Exception e){
+            throw new NotAcceptableException(); 
+        }
+    }
+    
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public Collection getAll(){
         try{
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Credentials", "true");
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-            response.addHeader("Access-Control-Allow-Headers","X-Requested-With, Authorization, " +
-                "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
-            
             return service.listarCiclos();
+        } catch (Exception e){
+            throw new NotAcceptableException(); 
+        }
+    }
+    
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void modificarCiclo(LogicaNegocio.Ciclo ciclo){
+        try{
+            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
+            service.modificarCiclo(ciclo);
+        } catch (Exception e){
+            throw new NotAcceptableException(); 
+        }
+    }
+    
+    @DELETE
+    @Path("{id}")
+    public void eliminarCiclo(@PathParam("id") String id){
+        try{
+            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
+            service.eliminarCiclo(id);
         } catch (Exception e){
             throw new NotAcceptableException(); 
         }

@@ -27,6 +27,7 @@ public class RegisterApp extends Application {
         classes.add(AlumnoController.class);
         classes.add(AutenticacionController.class);
         classes.add(CrossOriginResourceSharingFilter.class);
+        classes.add(GrupoController.class);
 
         return classes;
     }   
