@@ -1,11 +1,7 @@
 import { Row, Card, Col } from "antd";
 import { Helmet } from "react-helmet";
-<<<<<<< HEAD
 import TablaCursos from "components/TablaCursos";
-=======
-import TablaCursos from "../../components/TablaCursos";
 import {useState} from 'react'
->>>>>>> 585b8e7bbce783745a366317e51d45c72d9206ef
 
 const MantenimientoCursos = () => {
   const [needsRefresh, setNeedsRefresh] = useState(true);

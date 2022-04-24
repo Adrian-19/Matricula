@@ -1,0 +1,40 @@
+/* @media screen and (max-width: 768px) {
+  .main-navigation-sider {
+    display: none;
+  }
+} */
+
+/* @media screen and (max-width: 480px) {
+  .ant-layout-header.main-header,
+  .ant-layout-content.main-content {
+    padding: 0 12px !important;
+  }
+  .ant-drawer-header {
+    padding: 11.5px 12px !important;
+  }
+} */
+
+.mobile-sider .ant-drawer-header {
+  border-bottom: none;
+}
+
+.pageContent::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.pageContent::-webkit-scrollbar-track {
+  border-radius: 10px;
+  display:"none";
+}
+ 
+/* Handle */
+.pageContent::-webkit-scrollbar-thumb {
+  background: rgb(193,193,193);  
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.pageContent::-webkit-scrollbar-thumb:hover {
+  background: rgb(165,165,165); 
+}

@@ -6,6 +6,7 @@
 package Control;
 
 import LogicaNegocio.Profesor;
+import com.sun.xml.internal.ws.resources.HttpserverMessages;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
@@ -88,7 +90,8 @@ public class ProfesorController {
     @DELETE
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON})
-    public void eliminarProfesor(@PathParam("id") String id) {
+    @Produces({MediaType.APPLICATION_JSON})
+    public String eliminarProfesor(@PathParam("id") String id) {
         try {
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
             response.addHeader("Access-Control-Allow-Origin", "*");
@@ -97,9 +100,13 @@ public class ProfesorController {
             response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, "
                     + "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
             service.eliminarProfesor(id);
-
+            
+            return "Profesor eliminado correctamente";
+            
         } catch (Exception e) {
-            throw new NotAcceptableException();
+               
+            System.out.println(e.getMessage()); 
+            return "ERROR";
         }
     }
 

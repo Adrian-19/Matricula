@@ -1,0 +1,22 @@
+.anticon.anticon-right.options:hover {
+  font-size:17px !important;
+  cursor: pointer;
+}
+
+.avatarPop .ant-popover-arrow-content::before {
+  background: linear-gradient(to left, #2d2d2d 50%, #2d2d2d 50%) no-repeat -10px -10px !important;
+
+}
+
+.botonCerrarSesion:hover {
+  color: aqua !important;
+}
+
+#avatarPop {
+  background: rgba(45, 45, 45);
+}
+
+
+.ant-popover-content>#avatarPop .ant-popover-arrow-content::before {
+  background: linear-gradient(to left, #2d2d2d 50%, #2d2d2d 50%) no-repeat -10px -10px !important;
+}

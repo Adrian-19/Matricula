@@ -83,7 +83,7 @@ public class ServicioProfesor extends Servicio {
             pstmt.execute();
             rs = (ResultSet) pstmt.getObject(1);
             while (rs.next()) {
-                Profesor = new Profesor(rs.getString("id"), rs.getString("cedula"), rs.getString("nombre"),rs.getString("email"));
+                Profesor = new Profesor(rs.getString("id"), rs.getString("cedula"), rs.getString("nombre"),rs.getString("telefono"),rs.getString("email"));
                 coleccion.add(Profesor);
             }
         } catch (SQLException e) {
@@ -111,7 +111,6 @@ public class ServicioProfesor extends Servicio {
             throw new NoDataException("La base de datos no se encuentra disponible");
         }
         ResultSet rs = null;
-        ArrayList coleccion = new ArrayList();
         Profesor Profesor = null;
         CallableStatement pstmt = null;
         try {
@@ -121,8 +120,7 @@ public class ServicioProfesor extends Servicio {
             pstmt.execute();
             rs = (ResultSet) pstmt.getObject(1);
             while (rs.next()) {
-                Profesor = new Profesor(rs.getString("id"), rs.getString("cedula"), rs.getString("nombre"),rs.getString("email"));
-                coleccion.add(Profesor);
+                Profesor = new Profesor(rs.getString("id"), rs.getString("cedula"), rs.getString("nombre"),rs.getString("telefono"),rs.getString("email"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -223,7 +221,7 @@ public class ServicioProfesor extends Servicio {
                 System.out.println("\nEliminación Satisfactoria!");
             }
         } catch (SQLException e) {
-            throw new GlobalException("Sentencia no valida");
+            throw new GlobalException("FK error");
         } finally {
             try {
                 if (pstmt != null) {

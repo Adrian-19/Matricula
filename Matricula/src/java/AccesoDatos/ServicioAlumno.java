@@ -156,7 +156,7 @@ public class ServicioAlumno extends Servicio {
         return coleccion;
     }
 
-    public Alumno buscarAlumno(String id) throws GlobalException, NoDataException {
+    public Alumno buscarAlumno(String cedula) throws GlobalException, NoDataException {
 
         try {
             conectar();
@@ -171,7 +171,7 @@ public class ServicioAlumno extends Servicio {
         try {
             pstmt = conexion.prepareCall(buscarAlumno);
             pstmt.registerOutParameter(1, OracleTypes.CURSOR);
-            pstmt.setString(2, id);
+            pstmt.setString(2, cedula);
             pstmt.execute();
             rs = (ResultSet) pstmt.getObject(1);
             while (rs.next()) {
