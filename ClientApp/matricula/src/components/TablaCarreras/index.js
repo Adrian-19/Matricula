@@ -77,6 +77,7 @@ const TablaCarreras = ({ needsRefresh, setNeedsRefresh, idCarrera = null }) => {
               });
               setEditingRow(null);
               setGuardarMethod(null);
+              form.resetFields()
               if (needsRefresh === true) {
                 setNeedsRefresh(false);
               } else {
@@ -90,6 +91,7 @@ const TablaCarreras = ({ needsRefresh, setNeedsRefresh, idCarrera = null }) => {
                 isError: true,
               }));
               setEditingRow(null);
+              form.resetFields()
               notification.error({
                 message: "Un error ha ocurrido.",
                 description:
@@ -126,6 +128,7 @@ const TablaCarreras = ({ needsRefresh, setNeedsRefresh, idCarrera = null }) => {
                 });
                 setEditingRow(null);
                 setGuardarMethod(null);
+                form.resetFields()
                 if (needsRefresh === true) {
                   setNeedsRefresh(false);
                 } else {
@@ -139,6 +142,7 @@ const TablaCarreras = ({ needsRefresh, setNeedsRefresh, idCarrera = null }) => {
                   isError: true,
                 }));
                 setEditingRow(null);
+                form.resetFields()
                 notification.error({
                   message: "Un error ha ocurrido.",
                   description:

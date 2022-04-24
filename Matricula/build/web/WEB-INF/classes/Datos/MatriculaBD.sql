@@ -445,8 +445,8 @@ END;
 show error
 
 -- CICLOS --
--- LIST
 
+-- INSERT
 create or replace procedure insertar_ciclo(i_annio in ciclo.annio%type, i_numero in ciclo.numero%type, i_fechaInicio in ciclo.fechaInicio%type, i_fechaFinal in ciclo.fechaFinal%type, i_activo in ciclo.activo%type)
 as 
 begin 
@@ -455,6 +455,7 @@ END;
 /
 show error
 
+-- LIST
 create or replace function listar_ciclo
 return types.ref_cursor
 as
@@ -462,6 +463,38 @@ cursor_ciclo types.ref_cursor;
 begin 
 open cursor_ciclo for
 select id, annio, numero, fechaInicio, fechaFinal, activo from ciclo;
+return cursor_ciclo;
+END;
+/
+show error
+
+-- MODIFY
+create or replace procedure modificar_ciclo(n_id in ciclo.annio%type, n_annio in ciclo.annio%type, n_numero in ciclo.numero%type, n_fechaInicio in ciclo.fechaInicio%type, n_fechaFinal in ciclo.fechaFinal%type, n_activo in ciclo.activo%type)
+as
+begin
+update ciclo set annio = n_annio, numero=n_numero,fechaInicio=n_fechaInicio,fechaFinal=n_fechaFinal,activo=n_activo where id = n_id;
+END;
+/
+show error
+
+-- DELETE
+create or replace procedure eliminar_ciclo(n_id in ciclo.id%type)
+as
+begin
+delete from ciclo where id=n_id;
+END;
+/
+show error
+
+-- SEARCH
+create or replace function buscar_ciclo(s_id in ciclo.id%type)
+return types.ref_cursor
+as
+cursor_ciclo types.ref_cursor;
+begin
+open cursor_ciclo for
+select *
+from Ciclo;
 return cursor_ciclo;
 END;
 /
@@ -477,6 +510,25 @@ insert into Grupo values(grupo_sequence.nextval, i_numeroGrupo, i_cicloId, i_cur
 END;
 /
 show error
+
+-- LIST (X PROFESOR ID)
+create or replace function listar_grupo_profesor(p_id in grupo.profesorId%type)
+return types.ref_cursor
+as
+grupo_cursor types.ref_cursor;
+begin
+open grupo_cursor for
+select grupo.id, grupo.numeroGrupo, grupo.cicloId, grupo.cursoId, grupo.profesorId, grupo.horario, ciclo.annio cicloAnnio, ciclo.numero cicloNumero, ciclo.activo cicloActivo, curso.codigo cursoCodigo, curso.nombre cursoNombre, profesor.id profesorId, profesor.nombre profesorNombre
+from(((Grupo
+inner join Ciclo on grupo.cicloId = ciclo.id)
+inner join Curso on grupo.cursoId = curso.id)
+inner join Profesor on grupo.profesorId = profesor.id)
+where grupo.profesorId = p_id;
+return grupo_cursor;
+END;
+/
+show error
+
 
 -- LIST
 -- create or replace function listar_grupo

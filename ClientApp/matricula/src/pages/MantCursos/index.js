@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 const MantenimientoCursos = () => {
   const [needsRefresh, setNeedsRefresh] = useState(true);
   const {id} = useParams()
-  console.log("id(1): ", id)
   return (
     <Row gutter={[0, 15]}>
       <Helmet>
