@@ -2,9 +2,12 @@ import { Row, Card, Col } from "antd";
 import { Helmet } from "react-helmet";
 import TablaCursos from "components/TablaCursos";
 import {useState} from 'react'
+import { useParams } from "react-router-dom";
 
 const MantenimientoCursos = () => {
   const [needsRefresh, setNeedsRefresh] = useState(true);
+  const {id} = useParams()
+  console.log("id(1): ", id)
   return (
     <Row gutter={[0, 15]}>
       <Helmet>
@@ -14,7 +17,7 @@ const MantenimientoCursos = () => {
         <Card>
           <Row justify="center">
             <Col span={24}>
-              <TablaCursos needsRefresh = {needsRefresh} setNeedsRefresh={setNeedsRefresh} />
+              <TablaCursos carreraId={id} needsRefresh = {needsRefresh} setNeedsRefresh={setNeedsRefresh} />
             </Col>
           </Row>
         </Card>

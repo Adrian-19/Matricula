@@ -90,7 +90,6 @@ public class ProfesorController {
     @DELETE
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
     public String eliminarProfesor(@PathParam("id") String id) {
         try {
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();

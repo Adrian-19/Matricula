@@ -58,6 +58,18 @@ public class Curso  {
         }
     }
     
+    @GET
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Collection getAllPorCarrera(@PathParam("id") String id){
+        try{
+            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
+            return service.listarCursoCarrera(id);
+        } catch (Exception e){
+            throw new NotAcceptableException(); 
+        }
+    }
+    
     @PUT
     @Consumes({MediaType.APPLICATION_JSON})
     public void modificarCurso(LogicaNegocio.Curso curso){

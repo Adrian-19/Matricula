@@ -83,7 +83,7 @@ public class ServicioCarrera extends Servicio {
             pstmt.execute();
             rs = (ResultSet) pstmt.getObject(1);
             while (rs.next()) {
-                carrera = new Carrera(rs.getString("id"),rs.getString("codigo"), rs.getString("nombre"), rs.getString("titulo"));
+                carrera = new Carrera(rs.getString("id"), rs.getString("codigo"), rs.getString("nombre"), rs.getString("titulo"));
                 coleccion.add(carrera);
             }
         } catch (SQLException e) {
@@ -148,61 +148,43 @@ public class ServicioCarrera extends Servicio {
         return carrera;
     }
 
-    public void modificarCarrera(Carrera carrera) throws GlobalException, NoDataException
-	{
-		try
-		{
-			conectar();
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new GlobalException("No se ha localizado el driver");
-		}
-		catch (SQLException e)
-		{
-			throw new NoDataException("La base de datos no se encuentra disponible");
-		}
-		PreparedStatement pstmt = null;
-		try
-		{
-			pstmt = conexion.prepareStatement(modificarCarrera);
-			pstmt.setString(1, carrera.getId());
-			pstmt.setString(2, carrera.getCodigo());
-			pstmt.setString(3, carrera.getNombre());
-			pstmt.setString(4, carrera.getTitulo());
-			int resultado = pstmt.executeUpdate();
+    public void modificarCarrera(Carrera carrera) throws GlobalException, NoDataException {
+        try {
+            conectar();
+        } catch (ClassNotFoundException e) {
+            throw new GlobalException("No se ha localizado el driver");
+        } catch (SQLException e) {
+            throw new NoDataException("La base de datos no se encuentra disponible");
+        }
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conexion.prepareStatement(modificarCarrera);
+            pstmt.setString(1, carrera.getId());
+            pstmt.setString(2, carrera.getCodigo());
+            pstmt.setString(3, carrera.getNombre());
+            pstmt.setString(4, carrera.getTitulo());
+            int resultado = pstmt.executeUpdate();
 
-			//si es diferente de 0 es porq si afecto un registro o mas
-			if (resultado == 0)
-			{
-				throw new NoDataException("No se realizo la actualización");
-			}
-			else
-			{
-				System.out.println("\nModificación Satisfactoria!");
-			}
-		}
-		catch (SQLException e)
-		{
-			throw new GlobalException("Sentencia no valida");
-		}
-		finally
-		{
-			try
-			{
-				if (pstmt != null)
-				{
-					pstmt.close();
-				}
-				desconectar();
-			}
-			catch (SQLException e)
-			{
-				throw new GlobalException("Estatutos invalidos o nulos");
-			}
-		}
-	}
-    
+            //si es diferente de 0 es porq si afecto un registro o mas
+            if (resultado == 0) {
+                throw new NoDataException("No se realizo la actualización");
+            } else {
+                System.out.println("\nModificación Satisfactoria!");
+            }
+        } catch (SQLException e) {
+            throw new GlobalException("Sentencia no valida");
+        } finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                desconectar();
+            } catch (SQLException e) {
+                throw new GlobalException("Estatutos invalidos o nulos");
+            }
+        }
+    }
+
     public void eliminarCarrera(String codigo) throws GlobalException, NoDataException {
         try {
             conectar();

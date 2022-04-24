@@ -6,6 +6,12 @@ function getAll() {
     }).then(res => res.json())
   }
 
+  function getAllPorCarrera(id){
+    return fetch(`${API_URL}/${id}`, {
+      method: "GET",
+    }).then(res => res.json())
+  }
+
   function insertarCurso({id, codigo, carreraId, cicloId, nombre, creditos, horas_semanales}){
     const cursoRequest={
         id,
@@ -24,7 +30,6 @@ function getAll() {
       if(!res.ok){
         throw new Error(res.status)
       }
-      return res.json()
     })
   }
 
@@ -56,16 +61,15 @@ function removeCurso(id){
     method: "DELETE",
   }).then(res=>{
     if(!res.ok){
-      console.log("why tho? : ", res.status)
       throw new Error(res.status)
     }
-    return res.json()
   })
 }
 
 function cursosAPI() {
     return{
         getAll,
+        getAllPorCarrera,
         insertarCurso,
         updateCurso,
         removeCurso
