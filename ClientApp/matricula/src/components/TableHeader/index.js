@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Input, Button, Row, Col } from "antd";
 import { PlusOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 
-import { useNavigate } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 
 const { Search } = Input;
 
@@ -15,7 +15,7 @@ const { Search } = Input;
 // Si el prop está nulo, no se muestra el botón.
 
 const TableHeader = ({ title, setFilterInput, dataSource, setDataSource, setEditingRow, form, editingRow, setGuardarMethod, newObject, placeholder, backButton }) => {
-    const navigate = useNavigate()
+    const history = useHistory()
     const onAddObject=()=>{
       if(editingRow!==null){
         form.resetFields()
@@ -33,7 +33,7 @@ const TableHeader = ({ title, setFilterInput, dataSource, setDataSource, setEdit
   return (
     <React.Fragment>
       <Col style={{ display: "flex", alignItems: "center" }}>
-      {backButton!==null ? <Button icon={<ArrowLeftOutlined /> } onClick={()=>navigate(`${backButton}`)}/> : <></> }
+      {backButton!==null ? <Button icon={<ArrowLeftOutlined /> } onClick={()=>history.push(`${backButton}`)}/> : <></> }
         <Search
           placeholder={placeholder}
           allowClear

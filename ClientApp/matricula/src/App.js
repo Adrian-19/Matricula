@@ -1,7 +1,6 @@
 import { ConfigProvider } from "antd";
 import esEs from "antd/lib/locale/es_ES"
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
-import './App.css';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import '@ant-design/pro-form/dist/form.css';
 import '@ant-design/pro-table/dist/table.css';
 import '@ant-design/pro-layout/dist/layout.css';
@@ -12,21 +11,37 @@ import MantenimientoCiclos from "pages/MantCiclos";
 import MantenimientoAdministradores from "pages/MantAdmins";
 import GruposProfesor from "pages/GruposProfesor";
 
-// <Route path="/shop" component={Shop}/>
+import Login from 'pages/Login';
+import MainLayout from "components/MainLayout";
+import RutaPrivada from "components/RutaPrivada";
+import AutenticacionContextProvider from "context/AutenticacionContext";
+import HomePage from "pages/Home";
+import MantenimientoProfesores from "pages/MantenimientoProfesores";
 
 function App() {
   return (
     <ConfigProvider locale={esEs}>
-    <Router>
-      <Routes>
-        <Route path="/cursos" exact element={<MantenimientoCursos/>}/>
-        <Route path="/carreras" element={<MantenimientoCarreras/>}/>
-        <Route path="/ciclos" element={<MantenimientoCiclos/>}/>
-        <Route path="/seguridad" element={<MantenimientoAdministradores/>}/>
-        <Route path="/registroNotas" element={<GruposProfesor/>}/>
-        <Route path="/cursos/:id" element={<MantenimientoCursos/>}/>
-      </Routes>
-    </Router>
+      <Router>
+        <AutenticacionContextProvider>
+        <Switch>
+          <Route exact path={"/login"} component={Login}/>
+          <Route path="/"> 
+            <MainLayout>
+              <Switch>
+                <RutaPrivada rolesPermitidos={["publico"]} exact path="/" component={HomePage}/>
+                <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/mantenimientoProfesores" component={MantenimientoProfesores}/>
+                <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/cursos" component={MantenimientoCursos}/>
+                <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/carreras" component={MantenimientoCarreras}/>
+                <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/ciclos" component={MantenimientoCiclos}/>
+                <RutaPrivada rolesPermitidos={["Administrador"]} path="/cursos/:id" component={MantenimientoCursos}/>
+                
+                <Route path={"*"} component={() => <h1>Not found</h1>} />
+              </Switch>
+            </MainLayout>
+          </Route>
+        </Switch>
+        </AutenticacionContextProvider>
+      </Router>
     </ConfigProvider>
   );
 }

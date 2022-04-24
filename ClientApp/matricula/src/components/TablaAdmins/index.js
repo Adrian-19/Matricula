@@ -11,12 +11,10 @@ import {
   import { useEffect, useState } from "react";
   import carrerasAPI from "../../services/carrerasAPI";
   import TableHeader from "../TableHeader";
-  import { useNavigate } from "react-router-dom"
   
   const { Option } = Select;
 
   const TablaAdministradores = ({ needsRefresh, setNeedsRefresh, idCarrera = null }) => {
-    const navigate = useNavigate()
     const [dataSource, setDataSource] = useState([]);
     const [filterInput, setFilterInput] = useState("");
     const [guardarMethod, setGuardarMethod] = useState(null);

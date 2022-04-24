@@ -12,6 +12,7 @@ import LogicaNegocio.Ciclo;
 import LogicaNegocio.Profesor;
 
 import LogicaNegocio.Curso;
+import LogicaNegocio.Usuario;
 
 import java.util.Collection;
 
@@ -42,6 +43,8 @@ public class DAL {
     
     private ServicioGrupo grupoDao;
 
+    private ServicioAutenticacion autenticacionDao;
+
     public DAL() {
         carreraDao = new ServicioCarrera();
         cursoDao = new ServicioCurso();
@@ -49,6 +52,7 @@ public class DAL {
         alumnoDao = new ServicioAlumno();
         cicloDao = new ServicioCiclo();
         grupoDao = new ServicioGrupo();
+        autenticacionDao = new ServicioAutenticacion();
     }
 
     public Collection listarCarrera() {
@@ -82,6 +86,10 @@ public class DAL {
         System.out.println("modificada carrera!");
     }
 
+    public void eliminarCarrera(String codigo) throws Exception {
+        carreraDao.eliminarCarrera(codigo);
+    }
+
     // PROFESOR
     public void insertarProfesor(Profesor profesor) throws Exception {
         profesorDao.insertarProfesor(profesor);
@@ -110,14 +118,10 @@ public class DAL {
         profesorDao.modificarProfesor(profesor);
     }
 
-    public void eliminarProfesor(String codigo) {
-        try {
-            profesorDao.eliminarProfesor(codigo);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            System.out.println("Exception at eliminar");
+    public void eliminarProfesor(String codigo) throws Exception {
 
-        }
+        profesorDao.eliminarProfesor(codigo);
+
     }
 
     // ALUMNO
@@ -162,10 +166,6 @@ public class DAL {
         }
     }
 
-    public void eliminarCarrera(String codigo) throws Exception {
-        carreraDao.eliminarCarrera(codigo);
-    }
-
     // ------- CURSOS -------
     public void insertarCurso(Curso curso) throws Exception {
         cursoDao.insertarCurso(curso);
@@ -208,5 +208,19 @@ public class DAL {
     
     public Collection listarGrupoProfesor(String id) throws Exception{
         return grupoDao.listarGrupoProfesor(id);
+    }
+
+    // ------- AUTENTICACION -------
+    public Usuario login(String cedula, String clave) throws Exception {
+        Usuario user = autenticacionDao.login(cedula, clave);
+        String rol = user.getRol();
+        if ("Administrador".equals(rol) || "Matriculador".equals(rol)) {
+            return user;
+        } else if ("Profesor".equals(rol)) {
+            user.setUsuario(DAL.instance().buscarProfesor(cedula));
+        } else if ("Alumno".equals(rol)) {
+            user.setUsuario(DAL.instance().buscarAlumno(cedula));
+        }
+        return user;
     }
 }

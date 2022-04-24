@@ -1,0 +1,38 @@
+.customMenu.ant-menu.ant-menu-dark .ant-menu-item-selected {
+  background-color: rgb(45, 45, 45) !important;
+  color: white !important;
+  font-size: 16px;
+  border-right: 6px solid rgb(105, 105, 105);
+  transition: none;
+}
+
+.customMenu.ant-menu.ant-menu-dark .ant-menu-item-selected:first-child
+ {
+  margin-top: 0;
+}
+
+
+.siderContainer{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.siderContainerTitle {
+  padding-top: 9px;
+}
+
+.avatarContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ant-divider { 
+  border-top: 4px solid rgba(27, 27, 27) !important;
+
+}
+
+.ant-divider-horizontal { 
+ margin: 6px 0px !important;
+}

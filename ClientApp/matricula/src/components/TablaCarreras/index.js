@@ -11,10 +11,10 @@ import {
 import { useEffect, useState } from "react";
 import carrerasAPI from "../../services/carrerasAPI";
 import TableHeader from "../TableHeader";
-import { useNavigate } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 
 const TablaCarreras = ({ needsRefresh, setNeedsRefresh, idCarrera = null }) => {
-  const navigate = useNavigate()
+  const history = useHistory()
   const [dataSource, setDataSource] = useState([]);
   const [filterInput, setFilterInput] = useState("");
   const [guardarMethod, setGuardarMethod] = useState(null);
@@ -316,7 +316,7 @@ const TablaCarreras = ({ needsRefresh, setNeedsRefresh, idCarrera = null }) => {
             <Button type="link" onClick={onFinish} hidden={editingRow === null ? true : (editingRow === record.id ? false : true) }>
               Guardar
             </Button>
-            <Button type="link" onClick={()=>navigate(`/cursos/${record.id}`)}>Ver Cursos</Button>
+            <Button type="link" onClick={()=>history.push(`/cursos/${record.id}`)}>Ver Cursos</Button>
             <Popconfirm
               title="¿Está seguro que desea borrar esta carrera?"
               onConfirm={() => onDelete(record.id)}

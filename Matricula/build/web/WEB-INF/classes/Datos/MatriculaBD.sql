@@ -14,6 +14,7 @@ drop table Ciclo cascade constraints;
 drop table Grupo cascade constraints;
 drop table Usuario cascade constraints;
 drop table matricula cascade constraints;
+drop table rol cascade constraints;
 
 
 drop sequence carrera_sequence;
@@ -24,6 +25,7 @@ drop sequence ciclo_sequence;
 drop sequence grupo_sequence;
 drop sequence usuario_sequence;
 drop sequence matricula_sequence;
+drop sequence rol_sequence;
 
 
 --        TABLES       -- TITLE
@@ -104,7 +106,7 @@ create table Usuario(
 	id varchar2(5),
 	cedula varchar2 (15),
 	clave varchar2 (20),
-	rol number (1),
+	rol varchar2(5),
 	constraints usuario_pk primary key (id)
 );
 
@@ -116,6 +118,13 @@ create table Matricula(
 	nota varchar2 (5),
 	constraints matriculas_pk primary key (id)
 );
+
+create table Rol (
+	id varchar2(5),
+	rol varchar2 (50),
+	constraints roles_pk primary key (id)
+);
+
 
 --        FOREIGN KEYS       -- TITLE
 
@@ -150,6 +159,11 @@ alter table matricula add constraint fk_matriculas_grupo
 foreign key (grupoId)
 references Grupo (id);
 
+-- usuario --
+alter table Usuario add constraint fk_usuario_rol
+foreign key (rol)
+references Rol (id);
+
 
 --        SEQUENCES       -- TITLE
 
@@ -161,6 +175,7 @@ create sequence ciclo_sequence;
 create sequence grupo_sequence;
 create sequence usuario_sequence;
 create sequence matricula_sequence;
+create sequence rol_sequence;
 
 
 --        PROCEDURES       -- TITLE
@@ -394,7 +409,7 @@ show error
 
 
 -- SEARCH
-create or replace function buscar_alumno(s_id in alumno.id%type)
+create or replace function buscar_alumno(s_cedula in alumno.cedula%type)
 return types.ref_cursor
 as
 cursor_alumno types.ref_cursor;
@@ -402,7 +417,7 @@ begin
 open cursor_alumno for
 select alumno.id alumnoId, alumno.cedula alumnoCedula, alumno.nombre alumnoNombre, alumno.telefono alumnoTelefono, alumno.email alumnoEmail, alumno.fechaNacimiento alumnoFechaNacimiento,
 carrera.id carreraId,carrera.codigo carreraCodigo, carrera.nombre carreraNombre, carrera.titulo carreraTitulo 
-from Alumno inner join Carrera on alumno.carreraId = carrera.id and alumno.id = s_id; 
+from Alumno inner join Carrera on alumno.carreraId = carrera.id and alumno.cedula = s_cedula; 
 return cursor_alumno;
 END;
 /
@@ -600,6 +615,35 @@ END;
 show error
 
 
+-- LOGIN
+
+create or replace function usuario_login(usuario_cedula in usuario.cedula%type, usuario_clave usuario.clave%type)
+return types.ref_cursor
+as
+cursor_usuario types.ref_cursor;
+begin
+open cursor_usuario for
+select id, cedula, clave, rol
+from  usuario 
+where usuario.cedula = usuario_cedula and usuario.clave = usuario_clave;
+return cursor_usuario;
+END;
+/
+show error
+
+
+-- ROL
+
+create or replace procedure insertar_rol(usuario_rol in usuario.rol%type)
+as
+begin
+insert into Rol values(rol_sequence.nextval,usuario_rol);
+END;
+/
+show error
+
+
+
 --        TEST DATA       -- TITLE
 
 exec insertar_ciclo('2020', '1', to_date('06/03/2020', 'DD/MM/YYYY'), to_date('06/07/2020', 'DD/MM/YYYY'), 0);
@@ -650,12 +694,17 @@ exec insertar_alumno('22221010', 'Angie Torres', '12345678', 'nucita@gmail.com',
 exec insertar_grupo('1', '4', '10', '1', '5:00 - 6:00p.m');
 exec insertar_grupo('2', '4', '11', '1', '7:00 - 8:00p.m');
 exec insertar_grupo('3', '4', '12', '2', '7:00 - 8:00p.m');
-exec insertar_grupo('1', '3', '7', '3', '7:00 - 8:00p.m');
-exec insertar_grupo('5', '3', '8', '3', '5:00 - 6:00p.m');
-exec insertar_grupo('6', '2', '9', '4', '5:00 - 6:00p.m');
-exec insertar_grupo('9', '1', '1', '4', '5:00 - 6:00p.m');
+exec insertar_grupo('1', '3', '7', '3',  '7:00 - 8:00p.m');
+exec insertar_grupo('5', '3', '8', '3',  '5:00 - 6:00p.m');
+exec insertar_grupo('6', '2', '9', '4',  '5:00 - 6:00p.m');
+exec insertar_grupo('9', '1', '1', '4',  '5:00 - 6:00p.m');
 
 exec insertar_matricula('M1','1','1',null);
+
+exec insertar_rol('Admin');
+exec insertar_rol('Matriculador');
+exec insertar_rol('Profesor');
+exec insertar_rol('Alumno');
 
 exec insertar_usuario('22223333', '1234', '4');
 exec insertar_usuario('22224444', '1234', '4');

@@ -14,7 +14,6 @@ import {
 import { useEffect, useState } from "react";
 import ciclosAPI from "../../services/ciclosAPI";
 import TableHeader from "../TableHeader";
-import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import "moment/locale/es";
 moment.locale("es");
@@ -23,7 +22,6 @@ const { Option } = Select;
 const { Text } = Typography;
 
 const TablaCiclos = ({ needsRefresh, setNeedsRefresh }) => {
-  const navigate = useNavigate();
   const [dataSource, setDataSource] = useState([]);
   const [filterInput, setFilterInput] = useState("");
   const [guardarMethod, setGuardarMethod] = useState(null);

@@ -1,0 +1,90 @@
+.typography {
+  line-height: 1rem;
+}
+
+.typography--variant-h1 {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.typography--variant-h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.typography--variant-h3 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.typography--variant-h4 {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.typography--variant-h5 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.typography--variant-h6 {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.typography--variant-heading {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.typography--variant-subheading {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.typography--type-primary {
+  color: var(--text-primary);
+}
+
+.typography--type-secondary {
+  color: var(--text-secondary);
+}
+
+.typography--type-ghost {
+  color: var(--text-ghost);
+}
+
+.typography--type-simpleLink,
+.typography--type-simpleLink {
+  cursor: pointer;
+}
+
+.typography--type-link {
+  color: var(--text-link);
+  cursor: pointer;
+}
+
+.typography--type-link:hover,
+.typography--type-simpleLink:hover {
+  text-decoration: underline;
+}
+
+.typography--block {
+  display: block;
+}
+
+.textEllipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+@supports (-webkit-line-clamp: 2) {
+  .textEllipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: initial;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+}
