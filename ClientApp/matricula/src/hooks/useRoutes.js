@@ -50,11 +50,27 @@ export const AppRoutes = [
     rolesAllowed: ["Administrador"]
   },
   {
-    name: "Mantenimiento de ciclos",
+    name: "Mantenimiento de Ciclos",
     path: "ciclos",
     icon: null,
     subroutes: null,
     key: '7',
+    rolesAllowed: ["Administrador"]
+  },
+  {
+    name: "Registro de Notas",
+    path: "misGrupos",
+    icon: null,
+    subroutes: null,
+    key: '7',
+    rolesAllowed: ["Profesor"]
+  },
+  {
+    name: "Seguridad",
+    path: "usuarios",
+    icon: null,
+    subroutes: null,
+    key: '8',
     rolesAllowed: ["Administrador"]
   },
 ]

@@ -28,6 +28,8 @@ public class RegisterApp extends Application {
         classes.add(AutenticacionController.class);
         classes.add(CrossOriginResourceSharingFilter.class);
         classes.add(GrupoController.class);
+        classes.add(MatriculaController.class);
+        classes.add(UsuarioController.class);
 
         return classes;
     }   

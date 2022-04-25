@@ -17,6 +17,7 @@ import RutaPrivada from "components/RutaPrivada";
 import AutenticacionContextProvider from "context/AutenticacionContext";
 import HomePage from "pages/Home";
 import MantenimientoProfesores from "pages/MantenimientoProfesores";
+import RegistrarNotas from "pages/RegistrarNotas";
 
 function App() {
   return (
@@ -33,8 +34,10 @@ function App() {
                 <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/cursos" component={MantenimientoCursos}/>
                 <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/carreras" component={MantenimientoCarreras}/>
                 <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/ciclos" component={MantenimientoCiclos}/>
+                <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/usuarios" component={MantenimientoAdministradores}/>
+                <RutaPrivada rolesPermitidos={["Profesor"]} exact path="/misGrupos" component={GruposProfesor}/>
                 <RutaPrivada rolesPermitidos={["Administrador"]} path="/cursos/:id" component={MantenimientoCursos}/>
-                
+                <RutaPrivada rolesPermitidos={["Profesor"]} exact path="/misGrupos/:id" component={RegistrarNotas}/>
                 <Route path={"*"} component={() => <h1>Not found</h1>} />
               </Switch>
             </MainLayout>

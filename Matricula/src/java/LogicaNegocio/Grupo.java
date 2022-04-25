@@ -32,7 +32,9 @@ public class Grupo {
         this.curso = curso;
     }
 
-    
+    public Grupo(){
+        
+    }
     
     public Profesor getProfesor() {
         return profesor;

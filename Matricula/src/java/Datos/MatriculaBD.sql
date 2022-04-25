@@ -538,12 +538,26 @@ from(((Grupo
 inner join Ciclo on grupo.cicloId = ciclo.id)
 inner join Curso on grupo.cursoId = curso.id)
 inner join Profesor on grupo.profesorId = profesor.id)
-where grupo.profesorId = p_id;
+where grupo.profesorId = p_id and ciclo.activo = 1;
 return grupo_cursor;
 END;
 /
 show error
 
+-- SEARCH
+create or replace function buscar_grupo_profesor(s_id in grupo.id%type, s_profesor in grupo.profesorId%type)
+return types.ref_cursor
+as
+grupo_cursor types.ref_cursor;
+begin
+open grupo_cursor for
+select *
+from Grupo
+where grupo.id = s_id and grupo.profesorId=s_profesor;
+return grupo_cursor;
+END;
+/
+show error
 
 -- LIST
 -- create or replace function listar_grupo
@@ -572,6 +586,34 @@ END;
 /
 show error
 
+create or replace function listar_ciclo
+return types.ref_cursor
+as
+cursor_ciclo types.ref_cursor;
+begin 
+open cursor_ciclo for
+select id, annio, numero, fechaInicio, fechaFinal, activo from ciclo;
+return cursor_ciclo;
+END;
+/
+show error
+
+-- LIST
+create or replace function listar_usuarios_admnins
+return types.ref_cursor
+as
+cursor_usuario types.ref_cursor;
+begin
+open cursor_usuario for 
+select usuario.id, usuario.cedula, usuario.clave, usuario.rol, rol.rol rolRol
+from (usuario 
+inner join Rol on usuario.rol = rol.id)
+where (rol.rol = 'Admin' or rol.rol = 'Matriculador') and usuario.cedula != '1111';
+return cursor_usuario;
+END;
+/
+show error
+
 -- SEARCH
 create or replace function buscar_usuario(s_cedula in usuario.cedula%type)
 return types.ref_cursor
@@ -581,6 +623,24 @@ begin
 open cursor_usuario for 
 select id, cedula, clave, rol from usuario where cedula = s_cedula;
 return cursor_usuario;
+END;
+/
+show error
+
+-- MODIFY
+create or replace procedure modificar_usuario(n_id in usuario.id%type, n_cedula in usuario.cedula%type, n_clave in usuario.clave%type, n_rol in usuario.rol%type)
+as
+begin
+update usuario set cedula = n_cedula, clave=n_clave,rol=n_rol where id = n_id;
+END;
+/
+show error
+
+-- DELETE
+create or replace procedure eliminar_usuario(n_id in usuario.id%type)
+as
+begin
+delete from usuario where id=n_id;
 END;
 /
 show error
@@ -614,6 +674,30 @@ END;
 /
 show error
 
+create or replace function listar_matriculas_grupo(s_grupo in matricula.grupoId%type)
+return types.ref_cursor
+as
+cursor_matricula types.ref_cursor;
+begin
+open cursor_matricula for
+select matricula.id, matricula.numero, matricula.alumnoId, matricula.grupoId, matricula.nota,  grupo.profesorId grupoProfesorId, alumno.cedula alumnoCedula, alumno.nombre alumnoNombre, alumno.email alumnoEmail, alumno.telefono alumnoTelefono
+from((Matricula
+inner join Alumno on matricula.alumnoId = alumno.id)
+inner join Grupo on matricula.grupoId = grupo.id)
+where matricula.grupoId = s_grupo;
+return cursor_matricula;
+END;
+/
+show error
+
+-- MODIFY
+create or replace procedure modificar_matricula(n_id in matricula.id%type, n_nota in matricula.nota%type)
+as
+begin
+update matricula set nota = n_nota where id = n_id;
+END;
+/
+show error
 
 -- LOGIN
 
@@ -699,8 +783,6 @@ exec insertar_grupo('5', '3', '8', '3',  '5:00 - 6:00p.m');
 exec insertar_grupo('6', '2', '9', '4',  '5:00 - 6:00p.m');
 exec insertar_grupo('9', '1', '1', '4',  '5:00 - 6:00p.m');
 
-exec insertar_matricula('M1','1','1',null);
-
 exec insertar_rol('Admin');
 exec insertar_rol('Matriculador');
 exec insertar_rol('Profesor');
@@ -720,11 +802,12 @@ exec insertar_usuario('11114444', '1234', '3');
 exec insertar_usuario('11115555', '1234', '3');
 exec insertar_usuario('1111', '1234', '1');
 exec insertar_usuario('2222', '1234', '2');
+exec insertar_usuario('3333', '1234', '1');
 
-exec insertar_matricula('M1','1','1',null);
-exec insertar_matricula('M1','1','3',null);
-exec insertar_matricula('M1','1','4',null);
-exec insertar_matricula('M1','1','5',null);
+exec insertar_matricula('M1','1','1',0);
+exec insertar_matricula('M1','1','3',0);
+exec insertar_matricula('M1','1','4',0);
+exec insertar_matricula('M1','1','5',0);
 
 
 
