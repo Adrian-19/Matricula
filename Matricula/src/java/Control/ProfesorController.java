@@ -36,10 +36,12 @@ public class ProfesorController {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void registrarProfesor(Profesor profesor) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Profesor registrarProfesor(Profesor profesor) {
         try {
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            service.insertarProfesor(profesor);
+            Profesor nuevoProfesor = service.insertarProfesor(profesor);
+            return nuevoProfesor;
         } catch (Exception e) {
             throw new NotAcceptableException();
         }
@@ -50,11 +52,6 @@ public class ProfesorController {
     public Collection listarProfesor() {
         try {
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Credentials", "true");
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, "
-                    + "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
 
             return service.listarProfesor();
         } catch (Exception e) {
@@ -89,22 +86,13 @@ public class ProfesorController {
     @DELETE
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON})
-    public String eliminarProfesor(@PathParam("id") String id) {
+    public void eliminarProfesor(@PathParam("id") String id) {
         try {
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Credentials", "true");
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, "
-                    + "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
             service.eliminarProfesor(id);
-            
-            return "Profesor eliminado correctamente";
-            
+                        
         } catch (Exception e) {
-               
-            System.out.println(e.getMessage()); 
-            return "ERROR";
+            throw new NotAcceptableException();
         }
     }
 

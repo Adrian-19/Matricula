@@ -1,11 +1,15 @@
 import { useContext, useEffect, useState } from "react"
 import { AutenticacionContext } from "context/AutenticacionContext"
+import {
+  AppstoreOutlined,
+} from '@ant-design/icons';
+
 
 export const AppRoutes = [
   {
     name: "Inicio",
     path: "",
-    icon: null,
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '1',
     rolesAllowed: ["publico"]
@@ -13,7 +17,7 @@ export const AppRoutes = [
   {
     name: "Mi historial académico",
     path: "miHistorial",
-    icon: null,
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '2',
     rolesAllowed: ["Alumno"]
@@ -21,19 +25,26 @@ export const AppRoutes = [
   {
     name: "Matrícula",
     path: "matricula",
-    icon: null,
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '3',
     rolesAllowed: ["Alumno", "Administrador"]
   },{
-    name: "Mantenimiento de profesores",
-    path: "mantenimientoProfesores",
-    icon: null,
+    name: "Profesores",
+    path: "profesores",
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '4',
     rolesAllowed: ["Administrador"]
-  },
-  {
+
+  },{
+    name: "Alumnos",
+    path: "alumnos",
+    icon: <AppstoreOutlined/>,
+    subroutes: null,
+    key: '100',
+    rolesAllowed: ["Administrador"]
+  },{
     name: "Mantenimiento de Cursos",
     path: "cursos",
     icon: null,
@@ -73,6 +84,7 @@ export const AppRoutes = [
     key: '8',
     rolesAllowed: ["Administrador"]
   },
+
 ]
 
 export function hasAccess(rolesAllowed, userRole) {

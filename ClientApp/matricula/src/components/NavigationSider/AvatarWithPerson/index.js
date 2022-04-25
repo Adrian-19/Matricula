@@ -6,11 +6,11 @@ import { LoadingOutlined, RightOutlined } from "@ant-design/icons"
 import "./index.css"
 
 
-export default function AvatarWithPerson() {
+export default function AvatarWithPerson({ collapsed }) {
   const { user, logout } = useContext(AutenticacionContext)
-  const [avatarType, setAvatarType] = useState(null);
+  //const [avatarType, setAvatarType] = useState(null);
   const [visible, setVisible] = useState(false);
-  let URL = "";
+  const [URL, setURL] = useState(null);
 
   useEffect(() => {
     if (Boolean(user)) {
@@ -19,20 +19,28 @@ export default function AvatarWithPerson() {
       try {
         fetch(API_URL)
           .then(res => res.json())
-          .then(persona => setAvatarType(persona.gender))
+          .then(persona => {
+            console.log("GENDER:", persona.gender)
+            if (persona.gender === "unknown")
+              setURL(`https://joeschmoe.io/api/v1/random`);
+            else
+              setURL(`https://joeschmoe.io/api/v1/${persona.gender}/random`);
+
+            //setAvatarType(persona.gender)
+          })
       }
       catch (e) {
         console.log('Error:', e);
       }
 
     }
-  }, [user])
+  }, [user, collapsed])
 
 
-  if (avatarType === "unknown")
-    URL = `https://joeschmoe.io/api/v1/random`;
-  else
-    URL = `https://joeschmoe.io/api/v1/${avatarType}/random`;
+  // if (avatarType === "unknown")
+  //   refURL.current = `https://joeschmoe.io/api/v1/random`;
+  // else
+  //   refURL.current = `https://joeschmoe.io/api/v1/${avatarType}/random`;
 
 
 
@@ -43,8 +51,8 @@ export default function AvatarWithPerson() {
     <>
       <Avatar
         size={150}
-        style={avatarType ? { backgroundColor: "white", userSelect: "none", } : { userSelect: "none", }}
-        src={avatarType ? URL : <LoadingOutlined style={{ fontSize: "70px", color: "white" }} />}>
+        style={URL ? { backgroundColor: "white", userSelect: "none", } : { userSelect: "none", }}
+        src={URL ? URL : <LoadingOutlined style={{ fontSize: "70px", color: "white" }} />}>
       </Avatar>
       <div className="nameContainer" style={{ display: "flex", alignItems: "center", alingConten: "center", gap: "2px" }}>
         <div style={{ maxWidth: "125px", overflow: "hidden", display: "inline" }}>

@@ -62,6 +62,8 @@ create table Profesor(
 	constraints profesor_pk primary key (id)
 );
 
+
+
 --
 
 create table Alumno(
@@ -330,7 +332,7 @@ show error
 create or replace procedure modificar_profesor(n_id in profesor.id%type, n_cedula in profesor.cedula%type, n_nombre in profesor.nombre%type, n_telefono in profesor.telefono%type, n_email in profesor.email%type)
 as
 begin
-update Profesor set nombre = n_nombre, telefono = n_telefono, email = n_email where id = n_id;
+update Profesor set cedula = n_cedula, nombre = n_nombre, telefono = n_telefono, email = n_email where id = n_id;
 END;
 /
 show error
