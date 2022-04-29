@@ -127,8 +127,10 @@ public class DAL {
     }
 
     // ALUMNO
-    public void insertarAlumno(Alumno alumno) throws Exception {
+    public Alumno insertarAlumno(Alumno alumno) throws Exception {
         alumnoDao.insertarAlumno(alumno);
+        Alumno nuevoAlumno = alumnoDao.buscarAlumno(alumno.getCedula());
+        return nuevoAlumno;
     }
 
     public Collection listarAlumno() {
@@ -158,14 +160,8 @@ public class DAL {
         alumnoDao.modificarAlumno(alumno);
     }
 
-    public void eliminarAlumno(String id) {
-        try {
-            alumnoDao.eliminarAlumno(id);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            System.out.println("Exception at eliminar");
-
-        }
+    public void eliminarAlumno(String id) throws Exception {
+        alumnoDao.eliminarAlumno(id);
     }
 
     // ------- CURSOS -------

@@ -35,10 +35,11 @@ public class AlumnoController {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void registrarAlumno(Alumno alumno) {
+    public Alumno registrarAlumno(Alumno alumno) {
         try {
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            service.insertarAlumno(alumno);
+            Alumno nuevoAlumno = service.insertarAlumno(alumno);
+            return nuevoAlumno;
         } catch (Exception e) {
             throw new NotAcceptableException();
         }
@@ -49,12 +50,6 @@ public class AlumnoController {
     public Collection listarAlumno() {
         try {
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Credentials", "true");
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, "
-                    + "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
-
             return service.listarAlumno();
         } catch (Exception e) {
             throw new NotAcceptableException();
@@ -104,16 +99,11 @@ public class AlumnoController {
     public void eliminarAlumno(@PathParam("id") String id) {
         try {
             AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Credentials", "true");
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, "
-                    + "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
             service.eliminarAlumno(id);
 
         } catch (Exception e) {
             throw new NotAcceptableException();
         }
     }
-
+    
 }

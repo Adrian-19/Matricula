@@ -53,7 +53,7 @@ function addAlumno({ carreraId, cedula, email, fechaNacimiento, nombre, telefono
 
 function modificarAlumno({ id, carreraId, cedula, email, fechaNacimiento, nombre, telefono }) {
 
-  console.log("PROFESOR A MODIFICAR: ", id, cedula, nombre, telefono, email)
+  console.log("ALUMNO A MODIFICAR: ", "id: ",id, "carreraId: ",carreraId, "cedula: ",cedula, "email: ",email, "fechaNacimiento: ",fechaNacimiento, "nombre: ",nombre, "telefono: ",telefono )
   const URL = `${API_URL}/alumno`
   const alumno = { id, carreraId, cedula, email, fechaNacimiento, nombre, telefono }
   const requestInfo = {
