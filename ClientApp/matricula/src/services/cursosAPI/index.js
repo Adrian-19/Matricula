@@ -12,12 +12,16 @@ function getAll() {
     }).then(res => res.json())
   }
 
-  function insertarCurso({id, codigo, carreraId, cicloId, nombre, creditos, horas_semanales}){
+  function getAllPorCarreraCiclo(carreraId, cicloId){
+    return fetch(`${API_URL}/${carreraId}/${cicloId}`,{
+      method:'GET'
+  }).then(res => res.json())
+  }
+
+  function insertarCurso({id, codigo, nombre, creditos, horas_semanales}){
     const cursoRequest={
         id,
         codigo,
-        carreraId,
-        cicloId,
         nombre,
         creditos,
         horas_semanales
@@ -33,12 +37,10 @@ function getAll() {
     })
   }
 
-function updateCurso({id, codigo, carreraId, cicloId, nombre, creditos, horas_semanales}){
+function updateCurso({id, codigo, nombre, creditos, horas_semanales}){
     const cursoRequest={
         id,
         codigo,
-        carreraId,
-        cicloId,
         nombre,
         creditos,
         horas_semanales
@@ -70,6 +72,7 @@ function cursosAPI() {
     return{
         getAll,
         getAllPorCarrera,
+        getAllPorCarreraCiclo,
         insertarCurso,
         updateCurso,
         removeCurso

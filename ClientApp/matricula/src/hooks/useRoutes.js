@@ -45,25 +45,25 @@ export const AppRoutes = [
     key: '100',
     rolesAllowed: ["Administrador"]
   },{
-    name: "Mantenimiento de Cursos",
+    name: "Cursos",
     path: "cursos",
-    icon: null,
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '5',
     rolesAllowed: ["Administrador"]
   },
   {
-    name: "Mantenimiento de Carreras",
+    name: "Carreras",
     path: "carreras",
-    icon: null,
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '6',
     rolesAllowed: ["Administrador"]
   },
   {
-    name: "Mantenimiento de Ciclos",
+    name: "Ciclos",
     path: "ciclos",
-    icon: null,
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '7',
     rolesAllowed: ["Administrador"]
@@ -71,7 +71,7 @@ export const AppRoutes = [
   {
     name: "Registro de Notas",
     path: "misGrupos",
-    icon: null,
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '7',
     rolesAllowed: ["Profesor"]
@@ -79,12 +79,19 @@ export const AppRoutes = [
   {
     name: "Seguridad",
     path: "usuarios",
-    icon: null,
+    icon: <AppstoreOutlined/>,
     subroutes: null,
     key: '8',
     rolesAllowed: ["Administrador"]
   },
-
+  {
+    name: "Oferta Académica",
+    path: "ofertaAcademica",
+    icon: <AppstoreOutlined/>,
+    subroutes: null,
+    key: '9',
+    rolesAllowed: ["Administrador"]
+  },
 ]
 
 export function hasAccess(rolesAllowed, userRole) {

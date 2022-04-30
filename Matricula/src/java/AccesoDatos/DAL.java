@@ -12,7 +12,9 @@ import LogicaNegocio.Ciclo;
 import LogicaNegocio.Profesor;
 
 import LogicaNegocio.Curso;
+import LogicaNegocio.Grupo;
 import LogicaNegocio.Matricula;
+import LogicaNegocio.PlanDeEstudio;
 import LogicaNegocio.Usuario;
 
 import java.util.Collection;
@@ -49,6 +51,10 @@ public class DAL {
     private ServicioMatricula matriculaDao;
     
     private ServicioUsuario usuarioDao;
+    
+    private ServicioPlanDeEstudio planDeEstudioDao;
+    
+    private ServicioOfertaAcademica ofertaAcademicaDao;
 
     public DAL() {
         carreraDao = new ServicioCarrera();
@@ -60,6 +66,8 @@ public class DAL {
         autenticacionDao = new ServicioAutenticacion();
         matriculaDao = new ServicioMatricula();
         usuarioDao = new ServicioUsuario();
+        planDeEstudioDao = new ServicioPlanDeEstudio();
+        ofertaAcademicaDao = new ServicioOfertaAcademica();
     }
 
     public Collection listarCarrera() {
@@ -191,10 +199,6 @@ public class DAL {
     public void eliminarCurso(String id) throws Exception {
         cursoDao.eliminarCurso(id);
     }
-    
-    public Collection listarCursoCarrera(String id) throws Exception{
-        return cursoDao.listarCursoCarrera(id);
-    }
 
     // ------- CICLOS -------
     public Collection listarCiclos() throws Exception {
@@ -215,6 +219,10 @@ public class DAL {
     
     // ------- GRUPOS -------
     
+     public void insertarGrupo(Grupo grupo) throws Exception{
+         grupoDao.insertarGrupo(grupo);
+     }
+    
     public Collection listarGrupoProfesor(String id) throws Exception{
         return grupoDao.listarGrupoProfesor(id);
     }
@@ -222,7 +230,19 @@ public class DAL {
     public Collection buscarGrupoProfesor(String id, String profesorId) throws Exception{
         return grupoDao.buscarGrupoProfesor(id, profesorId);
     }
+    
+    public Collection listarGrupoCurso(String cursoId, String cicloId) throws Exception{
+        return grupoDao.listarGrupoCurso(cursoId, cicloId);
+    }
+    
+    public void modificarGrupo(Grupo grupo) throws Exception{
+        grupoDao.modificarGrupo(grupo);
+    }
 
+    public void eliminarGrupo(String codigo) throws Exception{
+        grupoDao.eliminarGrupo(codigo);
+    }
+    
     // ------- AUTENTICACION -------
     public Usuario login(String cedula, String clave) throws Exception {
         Usuario user = autenticacionDao.login(cedula, clave);
@@ -263,5 +283,23 @@ public class DAL {
     
     public void eliminarUsuario(String id) throws Exception{
         usuarioDao.eliminarUsuario(id);
+    }
+    
+    // ------- PLAN DE ESTUDIO ------- 
+    
+    public Collection listarPlanDeEstudioCarrera(String id) throws Exception{
+        return planDeEstudioDao.listarPlanDeEstudioCarrera(id);
+    }
+    
+    public void insertarPlan(PlanDeEstudio planDeEstudio) throws Exception{
+        planDeEstudioDao.insertarPlan(planDeEstudio);
+    }
+    
+    public void eliminarPlanDeEstudio(String id) throws Exception{
+        planDeEstudioDao.eliminarPlanDeEstudio(id);
+    }
+    
+    public Collection listarOfertaAcademicaCiclo(String carreraId, String cicloId) throws Exception{
+        return ofertaAcademicaDao.listarOfertaAcademicaCiclo(carreraId, cicloId);
     }
 }

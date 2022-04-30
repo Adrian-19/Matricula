@@ -58,17 +58,29 @@ public class Curso  {
         }
     }
     
-    @GET
-    @Path("{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Collection getAllPorCarrera(@PathParam("id") String id){
-        try{
-            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
-            return service.listarCursoCarrera(id);
-        } catch (Exception e){
-            throw new NotAcceptableException(); 
-        }
-    }
+//    @GET
+//    @Path("{id}")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Collection getAllPorCarrera(@PathParam("id") String id){
+//        try{
+//            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
+//            return service.listarCursoCarrera(id); // listar_planDeEstudio_carrera
+//        } catch (Exception e){
+//            throw new NotAcceptableException(); 
+//        }
+//    }
+//    
+//    @GET
+//    @Path("{carreraId}/{cicloId}")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Collection getAllPorCarreraCiclo(@PathParam("carreraId") String carreraId, @PathParam("cicloId") String cicloId){
+//        try{
+//            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
+//            return service.listarCursoCarreraCiclo(carreraId, cicloId);
+//        } catch (Exception e){
+//            throw new NotAcceptableException(); 
+//        }
+//    }
     
     @PUT
     @Consumes({MediaType.APPLICATION_JSON})

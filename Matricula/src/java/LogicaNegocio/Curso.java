@@ -12,43 +12,19 @@ package LogicaNegocio;
 public class Curso {
     String id;
     String codigo;
-    String carreraId;
-    String cicloId;
     String nombre;
     String creditos;
     String horas_semanales;
-    Carrera carrera;
-    Ciclo ciclo;
 
     public Curso() {
     }
 
-    public Curso(String id, String codigo, String carreraId, String cicloId, String nombre, String creditos, String horas_semanales, Carrera carrera, Ciclo ciclo) {
+    public Curso(String id, String codigo, String nombre, String creditos, String horas_semanales) {
         this.id = id;
         this.codigo = codigo;
-        this.carreraId = carreraId;
-        this.cicloId = cicloId;
         this.nombre = nombre;
         this.creditos = creditos;
         this.horas_semanales = horas_semanales;
-        this.carrera = carrera;
-        this.ciclo = ciclo;
-    }
-
-    public Carrera getCarrera() {
-        return carrera;
-    }
-
-    public void setCarrera(Carrera carrera) {
-        this.carrera = carrera;
-    }
-
-    public Ciclo getCiclo() {
-        return ciclo;
-    }
-
-    public void setCiclo(Ciclo ciclo) {
-        this.ciclo = ciclo;
     }
 
     public String getId() {
@@ -65,22 +41,6 @@ public class Curso {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
-    }
-
-    public String getCarreraId() {
-        return carreraId;
-    }
-
-    public void setCarreraId(String carreraId) {
-        this.carreraId = carreraId;
-    }
-
-    public String getCicloId() {
-        return cicloId;
-    }
-
-    public void setCicloId(String cicloId) {
-        this.cicloId = cicloId;
     }
 
     public String getNombre() {
@@ -107,9 +67,5 @@ public class Curso {
         this.horas_semanales = horas_semanales;
     }
 
-    @Override
-    public String toString() {
-        return "Curso{" + "id=" + id + ", codigo=" + codigo + ", carreraId=" + carreraId + ", cicloId=" + cicloId + ", nombre=" + nombre + ", creditos=" + creditos + ", horas_semanales=" + horas_semanales + '}';
-    }
     
 }

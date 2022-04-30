@@ -10,17 +10,19 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import cursosAPI from "../../services/cursosAPI";
-import carrerasAPI from "../../services/carrerasAPI";
-import ciclosAPI from "../../services/ciclosAPI";
 import TableHeader from "../TableHeader";
+import { useHistory } from "react-router-dom";
+import planDeEstudioAPI from "services/planDeEstudioAPI";
 
-const { Option } = Select;
-
-const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
+const TablaCursos = ({
+  needsRefresh,
+  setNeedsRefresh,
+  carreraId = null,
+  cicloId = null,
+}) => {
   const backTo = "/carreras";
+  const history = useHistory();
   const [dataSource, setDataSource] = useState([]);
-  const [carrerasDataSource, setCarrerasDataSource] = useState([]);
-  const [ciclosDataSource, setCiclosDataSource] = useState([]);
   const [filterInput, setFilterInput] = useState("");
   const [guardarMethod, setGuardarMethod] = useState(null);
   const [state, setState] = useState({
@@ -42,8 +44,8 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    console.log("id: ", carreraId);
-    if (carreraId === null) {
+    console.log("cicloId: ", cicloId)
+    if (carreraId === null && cicloId === null) { /** Solo mostrar cursos (Mant de cursos) */
       setState((prev) => ({
         ...prev,
         isLoading: true,
@@ -52,23 +54,10 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
         .getAll()
         .then((newData) => {
           setDataSource(newData);
-          carrerasAPI()
-            .getAll()
-            .then((newCarreras) => {
-              newCarreras.forEach((element) => {
-                element.key = element.id;
-              });
-              setCarrerasDataSource(newCarreras);
-              ciclosAPI()
-                .getAll()
-                .then((newCiclos) => {
-                  setCiclosDataSource(newCiclos);
-                  setState((prev) => ({
-                    ...prev,
-                    isLoading: false,
-                  }));
-                });
-            });
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+          }));
         })
         .catch((error) => {
           setState((prev) => ({
@@ -77,32 +66,19 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
             isError: true,
           }));
         });
-    } else {
+    } else { /** Mostrar cursos x carrera (Mant de carreras) y oferta académica.*/
       setState((prev) => ({
         ...prev,
         isLoading: true,
       }));
-      cursosAPI()
-        .getAllPorCarrera(carreraId)
+      planDeEstudioAPI()
+      .getAllPorCarrera(carreraId)
         .then((newData) => {
           setDataSource(newData);
-          carrerasAPI()
-            .getAll()
-            .then((newCarreras) => {
-              newCarreras.forEach((element) => {
-                element.key = element.id;
-              });
-              setCarrerasDataSource(newCarreras);
-              ciclosAPI()
-                .getAll()
-                .then((newCiclos) => {
-                  setCiclosDataSource(newCiclos);
-                  setState((prev) => ({
-                    ...prev,
-                    isLoading: false,
-                  }));
-                });
-            });
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+          }));
         })
         .catch((error) => {
           setState((prev) => ({
@@ -111,7 +87,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
             isError: true,
           }));
         });
-    }
+    } 
   }, [needsRefresh]);
 
   const onFinish = () => {
@@ -122,8 +98,6 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
         .validateFields([
           "nombre",
           "codigo",
-          "carrera",
-          "ciclo",
           "creditos",
           "horas_semanales",
         ])
@@ -137,8 +111,6 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
               id: editingRow,
               nombre: values.nombre,
               codigo: values.codigo,
-              carreraId: values.carrera,
-              cicloId: values.ciclo,
               creditos: values.creditos,
               horas_semanales: values.horas_semanales,
             })
@@ -167,7 +139,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
                 isError: true,
               }));
               setEditingRow(null);
-              form.resetFields()
+              form.resetFields();
               notification.error({
                 message: "Un error ha ocurrido.",
                 description:
@@ -187,8 +159,6 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
         .validateFields([
           "nombre",
           "codigo",
-          "carrera",
-          "ciclo",
           "creditos",
           "horas_semanales",
         ])
@@ -198,8 +168,6 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
               id: editingRow,
               nombre: values.nombre,
               codigo: values.codigo,
-              carreraId: values.carrera,
-              cicloId: values.ciclo,
               creditos: values.creditos,
               horas_semanales: values.horas_semanales,
             })
@@ -224,7 +192,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
                 isError: true,
               }));
               setEditingRow(null);
-              form.resetFields()
+              form.resetFields();
               notification.error({
                 message: "Un error ha ocurrido.",
                 description:
@@ -261,7 +229,8 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
   };
 
   const onDelete = (id) => {
-    cursosAPI()
+    if(carreraId === null){
+      cursosAPI()
       .removeCurso(id)
       .then(() => {
         notification.success({
@@ -281,6 +250,28 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
             "El curso todavía está asociado a uno o varios grupos. Por favor, remuévalos primero. ",
         });
       });
+    } else{
+      planDeEstudioAPI()
+      .removePlan(id)
+      .then(()=>{
+        notification.success({
+          message: "Actualización exitosa.",
+          description: "El dato se eliminó exitosamente.",
+        });
+        if (needsRefresh === true) {
+          setNeedsRefresh(false);
+        } else {
+          setNeedsRefresh(true);
+        }
+      }).catch((error) => {
+        notification.error({
+          message: "Eliminación incorrecta",
+          description:
+            "El curso todavía está asociado a uno o varios grupos. Por favor, remuévalos primero. ",
+        });
+      });
+    }
+    
   };
 
   const columns = [
@@ -304,7 +295,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
             </Form.Item>
           );
         } else {
-          return <p>{text}</p>;
+          return <p>{carreraId!== null ? record.curso.nombre : text}</p>;
         }
       },
     },
@@ -330,68 +321,11 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
             </Form.Item>
           );
         } else {
-          return <p>{text}</p>;
+          return <p>{carreraId!== null ? record.curso.codigo : text}</p>;
         }
       },
     },
-    {
-      key: 3,
-      title: "Carrera",
-      render: (text, record) => {
-        if (editingRow === record.id) {
-          return (
-            <Form.Item
-              name="carrera"
-              rules={[
-                {
-                  required: true,
-                  message: "Seleccione una carrera",
-                },
-              ]}
-            >
-              <Select>
-                {carrerasDataSource.map((carrera) => (
-                  <Option value={carrera.id}>
-                    {`${carrera.codigo} - ${carrera.nombre}`}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          );
-        } else {
-          return <p>{`${record.carrera.codigo} - ${record.carrera.nombre}`}</p>;
-        }
-      },
-    },
-    {
-      key: 4,
-      title: "Ciclo",
-      render: (text, record) => {
-        if (editingRow === record.id) {
-          return (
-            <Form.Item
-              name="ciclo"
-              rules={[
-                {
-                  required: true,
-                  message: "Seleccione un ciclo",
-                },
-              ]}
-            >
-              <Select>
-                {ciclosDataSource.map((ciclo) => (
-                  <Option value={ciclo.id}>
-                    {`${ciclo.numero} - ${ciclo.annio}`}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          );
-        } else {
-          return <p>{`${record.ciclo.numero} - ${record.ciclo.annio}`}</p>;
-        }
-      },
-    },
+    
     {
       key: 5,
       title: "Créditos",
@@ -412,7 +346,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
             </Form.Item>
           );
         } else {
-          return <p>{text}</p>;
+          return <p>{carreraId!== null ? record.curso.creditos : text}</p>;
         }
       },
     },
@@ -437,7 +371,7 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
             </Form.Item>
           );
         } else {
-          return <p>{text}</p>;
+          return <p>{carreraId!== null ? record.curso.horas_semanales : text}</p>;
         }
       },
     },
@@ -448,17 +382,16 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
           <>
             <Button
               type="link"
+              hidden={carreraId !== null ? true : false}
               onClick={() => {
                 setEditingRow(record.id);
                 setGuardarMethod(1);
                 if (editingRow === null) {
                   form.setFieldsValue({
-                    nombre: record.nombre,
-                    carrera: record.carrera.id,
-                    ciclo: record.ciclo.id,
-                    creditos: record.creditos,
-                    horas_semanales: record.horas_semanales,
-                    codigo: record.codigo,
+                    nombre: carreraId!== null ? record.curso.nombre : record.nombre,
+                    creditos: carreraId!== null ? record.curso.creditos : record.creditos,
+                    horas_semanales: carreraId!== null ? record.curso.horas_semanales : record.horas_semanales,
+                    codigo: carreraId!== null ? record.curso.codigo : record.codigo,
                   });
                 } else {
                   if (guardarMethod === 2) {
@@ -481,7 +414,9 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
               type="link"
               onClick={onFinish}
               hidden={
-                editingRow === null
+                carreraId !== null && cicloId !== null
+                  ? true
+                  : editingRow === null
                   ? true
                   : editingRow === record.id
                   ? false
@@ -496,10 +431,21 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
               okText="Sí"
               cancelText="No"
             >
-              <Button danger type="link">
+              <Button
+                danger
+                type="link"
+                hidden={carreraId !== null && cicloId !== null}
+              >
                 Borrar
               </Button>
             </Popconfirm>
+            <Button
+              type="link"
+              onClick={() => history.push(`/grupos/${record.id}/${cicloId}`)}
+              hidden={cicloId === null}
+            >
+              Ver Grupos
+            </Button>
           </>
         );
       },
@@ -517,9 +463,13 @@ const TablaCursos = ({ needsRefresh, setNeedsRefresh, carreraId = null }) => {
         editingRow={editingRow}
         setEditingRow={setEditingRow}
         setGuardarMethod={setGuardarMethod}
-        newObject={newCurso}
+        newObject={carreraId !== null && cicloId!==null ? null : newCurso}
         placeholder={"Buscar por código, nombre o carrera"}
         backButton={carreraId !== null ? backTo : null}
+        anadirCursoLista={dataSource}
+        carreraId={carreraId}
+        setNeedsRefresh={setNeedsRefresh}
+        needsRefresh={needsRefresh}
       />
       <Form form={form}>
         <Table

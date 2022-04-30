@@ -136,9 +136,8 @@ public class ServicioAlumno extends Servicio {
                         rs.getString("carreraNombre"), rs.getString("carreraTitulo"));
                 Ciclo ciclo = new Ciclo(rs.getString("cicloId"),rs.getString("cicloAnnio"), rs.getString("cicloNumero"),
                     rs.getDate("cicloFechaInicio"),rs.getDate("cicloFechaFinal"),rs.getInt("cicloActivo"));
-                curso = new Curso(rs.getString("cursoId"), rs.getString("cursoCodigo"), rs.getString("carreraId"), 
-                    rs.getString("cicloId"), rs.getString("cursoNombre"), rs.getString("cursoCreditos"), rs.getString("cursoHorasSemanales"), 
-                        carrera, ciclo);
+                curso = new Curso(rs.getString("cursoId"), rs.getString("cursoCodigo"), rs.getString("cursoNombre"), rs.getString("cursoCreditos"), rs.getString("cursoHorasSemanales"));
+                        
                 coleccion.add(curso);
             }
         } catch (SQLException e) {
