@@ -26,6 +26,11 @@ const TablaGrupos = ({cursoId = null, cicloId = null, needsRefresh, setNeedsRefr
   const filterData = () => {
     const data = dataSource;
     if (filterInput === "") return data;
+    else{
+      return data.filter(
+        (element)=> element.numeroGrupo.includes(filterInput)
+      )
+    }
   }
 
   const onFinishUpdate=()=>{
