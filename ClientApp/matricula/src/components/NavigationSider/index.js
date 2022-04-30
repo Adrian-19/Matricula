@@ -24,11 +24,11 @@ function NavigationSider() {
             <div className="siderContainerTitle" >
               <Typography variant={"heading"} align="center" color="white" > <FaUniversity style={{ fontSize: "20px" }} />    Universidad</Typography>
             </div>
-            <Divider />
+            <Divider className="dividerMenu" />
             <div className="avatarContainer">
               <AvatarWithPerson collapsed={collapsed} />
             </div>
-            <Divider />
+            <Divider className="dividerMenu" />
             <Menu
               className="customMenu"
               style={{ backgroundColor: "rgb(30,30,30)" }}
@@ -45,7 +45,7 @@ function NavigationSider() {
                 </Menu.Item>
               ))}
             </Menu>
-            <Divider />
+            <Divider className="dividerMenu"  />
           </div>
         </> : <>
           <Menu

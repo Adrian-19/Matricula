@@ -28,7 +28,8 @@ public class ServicioGrupo extends Servicio{
     private static final String buscarGrupo = "{?=call buscar_grupo(?)}";
     private static final String modificarGrupo = "{call modificar_grupo(?,?,?,?,?,?)}";
     private static final String eliminarGrupo = "{call eliminar_grupo(?)}";
-
+    private static final String buscarGrupoProfesor = "{?=call buscar_grupo_profesor(?,?)}";
+    
     public Collection listarGrupoProfesor(String id) throws GlobalException, NoDataException {
 
         try {
@@ -63,6 +64,51 @@ public class ServicioGrupo extends Servicio{
                 grupo = new Grupo(rs.getString("id"), rs.getString("numeroGrupo"), 
                         rs.getString("cicloId"), rs.getString("cursoId"), rs.getString("profesorId"), 
                         rs.getString("horario"), profesor, ciclo, curso );
+                coleccion.add(grupo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            throw new GlobalException("Sentencia no valida");
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                desconectar();
+            } catch (SQLException e) {
+                throw new GlobalException("Estatutos invalidos o nulos");
+            }
+        }
+        return coleccion;
+    }
+
+    public Collection buscarGrupoProfesor(String id, String profesorId) throws GlobalException, NoDataException {
+
+        try {
+            conectar();
+        } catch (ClassNotFoundException e) {
+            throw new GlobalException("No se ha localizado el driver");
+        } catch (SQLException e) {
+            throw new NoDataException("La base de datos no se encuentra disponible");
+        }
+        ResultSet rs = null;
+        ArrayList coleccion = new ArrayList();
+        Grupo grupo = null;
+        CallableStatement pstmt = null;
+        try {
+            pstmt = conexion.prepareCall(buscarGrupoProfesor);
+            pstmt.registerOutParameter(1, OracleTypes.CURSOR);
+            pstmt.setString(2, id);
+            pstmt.setString(3, profesorId);
+            pstmt.execute();
+            rs = (ResultSet) pstmt.getObject(1);
+            while (rs.next()) {
+                grupo = new Grupo();
+                grupo.setId(rs.getString("id"));
                 coleccion.add(grupo);
             }
         } catch (SQLException e) {

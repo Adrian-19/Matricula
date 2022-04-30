@@ -6,6 +6,7 @@
 package Control;
 
 import java.util.Collection;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.Path;
@@ -21,6 +22,18 @@ import javax.ws.rs.core.MediaType;
 public class GrupoController {
     
     @GET
+    @Path("{profesorId}/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Collection buscarGrupos(@PathParam("id") String id, @PathParam("profesorId") String profesorId){
+           try{
+            AccesoDatos.DAL service = AccesoDatos.DAL.instance();
+            return service.buscarGrupoProfesor(id, profesorId);
+        } catch (Exception e){
+            throw new NotAcceptableException(); 
+        }
+    }
+    
+    @GET
     @Path("profesor/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public Collection getAllPorProfesor(@PathParam("id") String id){
@@ -31,4 +44,5 @@ public class GrupoController {
             throw new NotAcceptableException(); 
         }
     }
+ 
 }

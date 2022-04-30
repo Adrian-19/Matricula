@@ -22,7 +22,7 @@ function buscarAlumno({ cedula }) {
     });
 }
 
-function buscarCursosAlumno({id}){
+function buscarCursosAlumno({ id }) {
   const URL = `${API_URL}/alumno/${id}/cursos`
   return fetch(URL)
     .then((res) => {
@@ -53,7 +53,7 @@ function addAlumno({ carreraId, cedula, email, fechaNacimiento, nombre, telefono
 
 function modificarAlumno({ id, carreraId, cedula, email, fechaNacimiento, nombre, telefono }) {
 
-  console.log("ALUMNO A MODIFICAR: ", "id: ",id, "carreraId: ",carreraId, "cedula: ",cedula, "email: ",email, "fechaNacimiento: ",fechaNacimiento, "nombre: ",nombre, "telefono: ",telefono )
+  console.log("ALUMNO A MODIFICAR: ", "id: ", id, "carreraId: ", carreraId, "cedula: ", cedula, "email: ", email, "fechaNacimiento: ", fechaNacimiento, "nombre: ", nombre, "telefono: ", telefono)
   const URL = `${API_URL}/alumno`
   const alumno = { id, carreraId, cedula, email, fechaNacimiento, nombre, telefono }
   const requestInfo = {
@@ -80,6 +80,25 @@ function eliminarAlumno({ id }) {
 }
 
 
+function historial({ id }) {
+  const URL = `${API_URL}/matricula/historial/${id}`
+  return fetch(URL)
+    .then((res) => {
+      if (!res.ok)
+        throw res.status;
+      return res.json();
+    });
+}
+
+function cursosCicloActivo({ id }) {
+  const URL = `${API_URL}/matricula/cursosCicloActivo/${id}`
+  return fetch(URL)
+    .then((res) => {
+      if (!res.ok)
+        throw res.status;
+      return res.json();
+    });
+}
 
 
 
@@ -90,7 +109,9 @@ function alumnosAPI() {
     buscarCursosAlumno,
     addAlumno,
     modificarAlumno,
-    eliminarAlumno
+    eliminarAlumno,
+    historial,
+    cursosCicloActivo
   }
 }
 

@@ -12,6 +12,7 @@ import LogicaNegocio.Ciclo;
 import LogicaNegocio.Profesor;
 
 import LogicaNegocio.Curso;
+import LogicaNegocio.Matricula;
 import LogicaNegocio.Usuario;
 
 import java.util.Collection;
@@ -44,6 +45,10 @@ public class DAL {
     private ServicioGrupo grupoDao;
 
     private ServicioAutenticacion autenticacionDao;
+    
+    private ServicioMatricula matriculaDao;
+    
+    private ServicioUsuario usuarioDao;
 
     public DAL() {
         carreraDao = new ServicioCarrera();
@@ -53,6 +58,8 @@ public class DAL {
         cicloDao = new ServicioCiclo();
         grupoDao = new ServicioGrupo();
         autenticacionDao = new ServicioAutenticacion();
+        matriculaDao = new ServicioMatricula();
+        usuarioDao = new ServicioUsuario();
     }
 
     public Collection listarCarrera() {
@@ -207,6 +214,10 @@ public class DAL {
     public Collection listarGrupoProfesor(String id) throws Exception{
         return grupoDao.listarGrupoProfesor(id);
     }
+    
+    public Collection buscarGrupoProfesor(String id, String profesorId) throws Exception{
+        return grupoDao.buscarGrupoProfesor(id, profesorId);
+    }
 
     // ------- AUTENTICACION -------
     public Usuario login(String cedula, String clave) throws Exception {
@@ -220,5 +231,46 @@ public class DAL {
             user.setUsuario(DAL.instance().buscarAlumno(cedula));
         }
         return user;
+    }
+    
+    // ------- MATRICULAS -------
+    
+    public Collection listarMatriculasGrupo(String id) throws Exception{
+        return matriculaDao.listarMatriculasGrupo(id);
+    }
+    
+    public void modificarMatricula(Matricula matricula) throws Exception{
+        matriculaDao.modificarMatricula(matricula);
+    }
+    
+    public Collection listarHistorial(String alumnoId) throws Exception{
+        return matriculaDao.listarHistorial(alumnoId);
+    }
+    
+    public Collection listarCursosAlumnoPorCicloActivo(String alumnoId) throws Exception{
+        return matriculaDao.listarCursosAlumnoPorCicloActivo(alumnoId);
+    }
+    
+    public void insertarMatricula(Matricula matricula) throws Exception {
+        matriculaDao.insertarMatricula(matricula);
+    }
+    
+    
+    // ------- USUARIOS -------
+    
+    public void insertarUsuario(Usuario usuario) throws Exception{
+        usuarioDao.insertarUsuario(usuario);
+    }
+    
+    public Collection listarUsuariosAdmnins() throws Exception{
+        return usuarioDao.listarUsuariosAdmnins();
+    }
+    
+    public void modificarUsuario(Usuario usuario) throws Exception{
+        usuarioDao.modificarUsuario(usuario);
+    }
+    
+    public void eliminarUsuario(String id) throws Exception{
+        usuarioDao.eliminarUsuario(id);
     }
 }

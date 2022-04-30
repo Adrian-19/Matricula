@@ -17,7 +17,9 @@ import RutaPrivada from "components/RutaPrivada";
 import AutenticacionContextProvider from "context/AutenticacionContext";
 import HomePage from "pages/Home";
 import MantenimientoProfesores from "pages/MantenimientoProfesores";
+import RegistrarNotas from "pages/RegistrarNotas";
 import MantenimientoAlumnos from "pages/MantenimientoAlumnos";
+import HistorialAlumno from "components/HistorialAlumno";
 
 function App() {
   return (
@@ -31,11 +33,15 @@ function App() {
                 <Switch>
                   <RutaPrivada rolesPermitidos={["publico"]} exact path="/" component={HomePage} />
                   <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/profesores" component={MantenimientoProfesores} />
-                  <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/alumnos" component={MantenimientoAlumnos} />
+                  <RutaPrivada rolesPermitidos={["Administrador","Matriculador"]} exact path="/alumnos" component={MantenimientoAlumnos} />
+                  <RutaPrivada rolesPermitidos={["Alumno"]} exact path="/miHistorial" component={HistorialAlumno} />
                   <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/cursos" component={MantenimientoCursos} />
                   <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/carreras" component={MantenimientoCarreras} />
                   <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/ciclos" component={MantenimientoCiclos} />
+                  <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/usuarios" component={MantenimientoAdministradores}/>
+                  <RutaPrivada rolesPermitidos={["Profesor"]} exact path="/misGrupos" component={GruposProfesor}/>
                   <RutaPrivada rolesPermitidos={["Administrador"]} path="/cursos/:id" component={MantenimientoCursos} />
+                  <RutaPrivada rolesPermitidos={["Profesor"]} exact path="/misGrupos/:id" component={RegistrarNotas}/>
                   <Route path={"*"} component={() => <h1>Not found</h1>} />
                 </Switch>
               </MainLayout>

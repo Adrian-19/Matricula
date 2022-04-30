@@ -34,6 +34,15 @@ public class Curso {
         this.carrera = carrera;
         this.ciclo = ciclo;
     }
+    
+    public Curso(String id, String codigo, String nombre, String creditos, String horasSemanales){
+        this.id = id;
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.creditos = creditos;
+        this.horas_semanales = horasSemanales;
+    }
+    
 
     public Carrera getCarrera() {
         return carrera;

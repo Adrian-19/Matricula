@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { AutenticacionContext } from "context/AutenticacionContext"
+import  {AutenticacionContext}  from "context/AutenticacionContext"
 import {
   AppstoreOutlined,
 } from '@ant-design/icons';
@@ -9,15 +9,15 @@ export const AppRoutes = [
   {
     name: "Inicio",
     path: "",
-    icon: <AppstoreOutlined/>,
+    icon: <AppstoreOutlined />,
     subroutes: null,
     key: '1',
     rolesAllowed: ["publico"]
   },
   {
-    name: "Mi historial académico",
+    name: "Historial",
     path: "miHistorial",
-    icon: <AppstoreOutlined/>,
+    icon: <AppstoreOutlined />,
     subroutes: null,
     key: '2',
     rolesAllowed: ["Alumno"]
@@ -25,26 +25,26 @@ export const AppRoutes = [
   {
     name: "Matrícula",
     path: "matricula",
-    icon: <AppstoreOutlined/>,
+    icon: <AppstoreOutlined />,
     subroutes: null,
     key: '3',
     rolesAllowed: ["Alumno", "Administrador"]
-  },{
+  }, {
     name: "Profesores",
     path: "profesores",
-    icon: <AppstoreOutlined/>,
+    icon: <AppstoreOutlined />,
     subroutes: null,
     key: '4',
     rolesAllowed: ["Administrador"]
 
-  },{
+  }, {
     name: "Alumnos",
     path: "alumnos",
-    icon: <AppstoreOutlined/>,
+    icon: <AppstoreOutlined />,
     subroutes: null,
     key: '100',
-    rolesAllowed: ["Administrador"]
-  },{
+    rolesAllowed: ["Administrador", "Matriculador"]
+  }, {
     name: "Mantenimiento de Cursos",
     path: "cursos",
     icon: null,
@@ -61,11 +61,27 @@ export const AppRoutes = [
     rolesAllowed: ["Administrador"]
   },
   {
-    name: "Mantenimiento de ciclos",
+    name: "Mantenimiento de Ciclos",
     path: "ciclos",
     icon: null,
     subroutes: null,
     key: '7',
+    rolesAllowed: ["Administrador"]
+  },
+  {
+    name: "Registro de Notas",
+    path: "misGrupos",
+    icon: null,
+    subroutes: null,
+    key: '7',
+    rolesAllowed: ["Profesor"]
+  },
+  {
+    name: "Seguridad",
+    path: "usuarios",
+    icon: null,
+    subroutes: null,
+    key: '8',
     rolesAllowed: ["Administrador"]
   },
 

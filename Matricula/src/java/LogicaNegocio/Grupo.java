@@ -31,8 +31,17 @@ public class Grupo {
         this.ciclo = ciclo;
         this.curso = curso;
     }
-
     
+    public Grupo(String id,String numeroGrupo, String horario ){
+        this.id = id; 
+        this.numeroGrupo = numeroGrupo;
+        this.horario = horario;
+    }
+    
+
+    public Grupo(){
+        
+    }
     
     public Profesor getProfesor() {
         return profesor;

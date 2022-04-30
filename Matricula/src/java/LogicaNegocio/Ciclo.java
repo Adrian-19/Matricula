@@ -34,7 +34,7 @@ public class Ciclo {
         this.fechaFinal = fechaFinal;
         this.activo = activo;
     }
-
+    
     public String getId() {
         return id;
     }

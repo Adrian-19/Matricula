@@ -37,9 +37,13 @@
   align-items: center;
 }
 
-.ant-divider {
+.ant-divider.dividerMenu {
   border-top: 4px solid rgba(27, 27, 27) !important;
 
+}
+
+.ant-divider {
+  border-top: 2px solid rgba(0, 0, 0, 0.06) !important
 }
 
 .ant-divider-horizontal {

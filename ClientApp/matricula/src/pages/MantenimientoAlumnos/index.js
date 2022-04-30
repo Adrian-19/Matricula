@@ -1,12 +1,17 @@
-import React, { useEffect, useRef, useState, } from 'react';
-import { Table, Input, Popconfirm, Form, Typography, notification, Row, Col, Button, Modal, Select, DatePicker } from 'antd';
-import profesoresAPI from 'services/profesoresAPI';
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import { Table, Input, Popconfirm, Form, Typography, notification, Row, Col, Button, Modal, Select, DatePicker, Drawer } from 'antd';
 import { PlusOutlined } from "@ant-design/icons"
 import alumnosAPI from 'services/alumnosAPI';
 import moment from 'moment'
 import carrerasAPI from 'services/carrerasAPI';
 import "moment/locale/es";
+import { AutenticacionContext } from "context/AutenticacionContext"
+import HistorialAlumno from 'components/HistorialAlumno';
+import ciclosAPI from 'services/ciclosAPI';
+import cursosAPI from 'services/cursosAPI';
+import matriculasAPI from 'services/matriculasAPI';
 moment.locale("es");
+
 const { Option } = Select
 
 const openErrorNotification = (message, description) => {
@@ -32,6 +37,7 @@ const openSuccessNotification = (message, description) => {
 
 
 function MantenimientoAlumnos() {
+  const { userRole } = useContext(AutenticacionContext)
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
@@ -39,7 +45,13 @@ function MantenimientoAlumnos() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [filterOption, setFilterOption] = useState({ option: "cedula", placeholder: "Filtrar por cédula" });
   const [carreras, setCarreras] = useState([]);
-
+  const [showModalHistorial, setShowModalHistorial] = useState(false);
+  const [currentAlumno, setCurrentAlumno] = useState({});
+  const [showModalCursosCicloActivo, setShowModalCursosCicloActivo] = useState(false)
+  const [cursosAlumno, setCursosAlumno] = useState([])
+  const [cicloActivo, setCicloActivo] = useState({})
+  const [cursosGeneral, setCursosGeneral] = useState([]);
+  //const []
 
   const EditableCell = ({
     editing,
@@ -101,13 +113,30 @@ function MantenimientoAlumnos() {
 
   };
 
+  const openModalHistorial = () => {
+    setShowModalHistorial(true);
+  };
+
+  const closeModalHistorial = () => {
+    setShowModalHistorial(false);
+  }
+
+  const openModalCursos = () => {
+    setShowModalCursosCicloActivo(true);
+  };
+
+  const closeModalCursos = () => {
+    setShowModalCursosCicloActivo(false);
+  }
+
+
+
   const handleOk = async () => {
     try {
       const alumno = await form.validateFields()
       alumno.fechaNacimiento = alumno.fechaNacimiento.format("YYYY-MM-DD")
       alumno.carreraId = alumno.carrera
-      console.log("AGREGAR", alumno)
-      alumnosAPI().addAlumno({ ...alumno})
+      alumnosAPI().addAlumno({ ...alumno })
         .then((alumno) => {
           setData(prev => [...prev, { ...alumno, key: alumno.id }])
           openSuccessNotification("Éxito al agregar", `El alumno ${alumno.nombre} con cédula ${alumno.cedula} ha sido agregado correctamente`);
@@ -140,6 +169,17 @@ function MantenimientoAlumnos() {
       .then(newCarreras => {
         newCarreras.forEach(element => element.key = element.id);
         setCarreras(newCarreras);
+      })
+      .catch((error) => { });
+    ciclosAPI().getAll()
+      .then(ciclos => {
+        const cicloA = ciclos.find(ciclo => ciclo.activo === 1)
+        setCicloActivo(cicloA)
+      })
+      .catch((error) => { });
+    cursosAPI().getAll()
+      .then(cursos => {
+        setCursosGeneral(cursos)
       })
       .catch((error) => { });
 
@@ -259,20 +299,35 @@ function MantenimientoAlumnos() {
             </Popconfirm>
           </span>
         ) : <>
-          <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)} style={{ marginRight: 8 }}>
+          {userRole === "Administrador" && <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)} style={{ marginRight: 8 }}>
             Editar
-          </Typography.Link>
-          <Typography.Link disabled={editingKey !== ''} onClick={() => console.log()} style={{ marginRight: 8 }}>
+          </Typography.Link>}
+          {userRole === "Administrador" && <Typography.Link disabled={editingKey !== ''} onClick={() => console.log()} style={{ marginRight: 8 }}>
             Cursos
-          </Typography.Link>
-          <Typography.Link disabled={editingKey !== ''} onClick={() => console.log()} style={{ marginRight: 8 }}>
+          </Typography.Link>}
+          {userRole === "Administrador" && <Typography.Link disabled={editingKey !== ''} onClick={() => {
+            setCurrentAlumno(record)
+            setShowModalHistorial(true)
+          }} style={{ marginRight: 8 }}>
             Historial
+          </Typography.Link>}
+          <Typography.Link disabled={editingKey !== ''} onClick={() => {
+            alumnosAPI().cursosCicloActivo({ id: record.id })
+              .then(cursos => {
+                setCursosAlumno(cursos)
+                setCurrentAlumno(record)
+                openModalCursos()
+              })
+              .catch(e => { console.log(e) })
+
+          }} style={{ marginRight: 8 }}>
+            Matricula
           </Typography.Link>
-          <Popconfirm title="¿Está seguro de eliminar al profesor?" onConfirm={() => handleDeleteRow(record)}>
+          {userRole === "Administrador" && <Popconfirm title="¿Está seguro de eliminar al profesor?" onConfirm={() => handleDeleteRow(record)}>
             <Typography.Link disabled={editingKey !== ''} style={editingKey !== '' ? null : { color: "red" }}>
               Eliminar
             </Typography.Link>
-          </Popconfirm>
+          </Popconfirm>}
         </>;
       },
     },
@@ -340,11 +395,40 @@ function MantenimientoAlumnos() {
     }
   }
 
+  const columnsCursos = [
+    {
+      title: 'Código',
+      dataIndex: 'codigo',
+    }, {
+      title: 'Nombre',
+      dataIndex: 'nombre',
+    }, {
+      title: 'Créditos',
+      dataIndex: 'creditos',
+    }, {
+      title: 'Horas semanales',
+      dataIndex: 'horas_semanales',
+    },
 
-  return (
-    <Form form={form} component={false}>
+  ]
+
+  const [showDrawer, setShowDrawer] = useState(false);
+
+  const matricular = () => {
+    const {numeroMatricula,matricularCurso } = form.getFieldsValue(["numeroMatricula", "matricularCurso"])
+    if(Boolean(numeroMatricula) || Boolean(matricularCurso)) 
+      return
+    const matricula = {
+      numero: numeroMatricula,
+      
+    }
+    matriculasAPI().insertarMatricula({})
+  }
+
+  return <>
+    {(userRole === "Administrador" || userRole === "Matriculador") && <Form form={form} component={false}>
       <Row>
-        <Col span={24} style={{ background: "rgb(250,250,251)", height: "80px", border: "1px solid rgb(240,240,240)" }} height={100}>
+        {userRole === "Administrador" && <Col span={24} style={{ background: "rgb(250,250,251)", height: "80px", border: "1px solid rgb(240,240,240)" }} height={100}>
           <Row justify="space-between" align="middle" style={{ height: "100%", padding: "20px" }}>
             <Col >
               <Input.Group compact>
@@ -367,7 +451,7 @@ function MantenimientoAlumnos() {
               <Button disabled={editingKey !== ''} type="primary" onClick={showModal}> <PlusOutlined style={{ fontSize: "100%" }} />Añadir alumno</Button>
             </Col>
           </Row>
-        </Col>
+        </Col>}
         <Col span={24}>
           <Table
             components={{
@@ -407,7 +491,7 @@ function MantenimientoAlumnos() {
           <Input placeholder="Digite el teléfono" ></Input>
         </Form.Item>
         <Form.Item name="fechaNacimiento" rules={[{ required: true, message: "Por favor elegir fecha" }]}>
-          <DatePicker format={"LL"} style={{ width:"100%"}}/>
+          <DatePicker format={"LL"} style={{ width: "100%" }} />
         </Form.Item>
         <Form.Item name="carrera" rules={[{ required: true, message: "Por favor elegir una carrera" }]}>
           <Select placeholder="Elegir carrera">
@@ -421,8 +505,68 @@ function MantenimientoAlumnos() {
       </Modal>
 
 
-    </Form>
-  );
+    </Form>}
+    <Modal
+      visible={showModalHistorial}
+      onCancel={closeModalHistorial}
+      width={900}
+    >
+      <HistorialAlumno id={currentAlumno.id} ></HistorialAlumno>
+
+    </Modal>
+
+    <Modal
+      title="Cursos matriculados en el ciclo activo"
+      className='cursos por ciclo activo'
+      visible={showModalCursosCicloActivo}
+      onCancel={closeModalCursos}
+      width={900}
+    >
+      <div className='cursos alumno' style={{ width: '100%' }}>
+
+        <Col style={{ display: 'flex', flexDirection: 'column', marginBottom: "15px" }}>
+          <Button
+            style={{ alignSelf: "flex-end" }}
+            disabled={editingKey !== ''}
+            type="primary"
+            onClick={() => setShowDrawer(true)}> <PlusOutlined style={{ fontSize: "100%" }} />Matricular curso</Button>
+        </Col>
+        <Table
+          columns={columnsCursos}
+          dataSource={cursosAlumno}
+          pagination={cursosAlumno.length > 10 ? true : false}
+        >
+
+
+        </Table>
+
+      </div>
+
+    </Modal>
+    <Drawer title="Matricular" placement="right" onClose={() => setShowDrawer(false)} visible={showDrawer}>
+      <Form.Item name="numeroMatricula" rules={[{ required: true }]}>
+        <Input placeholder="Digite el número de matricula" ></Input>
+      </Form.Item>
+      <Form.Item name="matricularCurso" rules={[{ required: true }]}>
+        <Select placeholder="Seleccionar un curso" >
+          {cursosGeneral.map(curso => {
+            return <Option value={curso.id} key={curso.id} >{curso.nombre}</Option>
+          })}
+
+        </Select>
+      </Form.Item>
+      <Col style={{ display: 'flex', flexDirection: 'column', marginBottom: "15px" }}>
+      <Button
+        style={{ alignSelf: "flex-end" }}
+        disabled={editingKey !== ''}
+        type="primary"
+        onClick={matricular}> <PlusOutlined style={{ fontSize: "100%" }} />Matricular</Button>
+    </Col>
+    </Drawer>
+    
+
+
+  </>
 };
 
 export default MantenimientoAlumnos;

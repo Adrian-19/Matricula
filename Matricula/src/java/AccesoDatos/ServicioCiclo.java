@@ -24,6 +24,7 @@ public class ServicioCiclo extends Servicio{
     private static final String buscarCiclo = "{?=call buscar_ciclo(?)}";
     private static final String modificarCiclo = "{call modificar_ciclo(?,?,?,?,?,?)}";
     private static final String eliminarCiclo = "{call eliminar_ciclo(?)}";
+    private static final String buscarCicloActivo = "{?=call buscar_ciclo_activo()}";
 
     public Collection listarCiclo() throws GlobalException, NoDataException {
         try {
@@ -179,4 +180,6 @@ public class ServicioCiclo extends Servicio{
             }
         }
     }
+    
+    
 }

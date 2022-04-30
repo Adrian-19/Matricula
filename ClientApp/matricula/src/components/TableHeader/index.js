@@ -40,14 +40,16 @@ const TableHeader = ({ title, setFilterInput, dataSource, setDataSource, setEdit
           onSearch={setFilterInput}
           style={{ width: "55%", padding: "5px " }}
         />
-        <Button
+        {newObject !== null ? <Button
           type="primary"
           shape="round"
           icon={<PlusOutlined />}
           onClick={onAddObject}
         >
           Añadir {title}
-        </Button>
+        </Button> : 
+        <></>}
+        
       </Col>
     </React.Fragment>
   );
