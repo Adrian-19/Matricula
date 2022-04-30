@@ -1,67 +1,48 @@
-import {
-  Button,
-  Table,
-  Form,
-  Input,
-  Select,
-  notification,
-  Popconfirm,
-  Col,
-} from "antd";
+import { Button, Col, Form, Input, notification, Popconfirm, Select, Table } from "antd";
+import TableHeader from "components/TableHeader";
 import { useEffect, useState } from "react";
-import usuariosAPI from "services/usuariosAPI";
-import carrerasAPI from "../../services/carrerasAPI";
-import TableHeader from "../TableHeader";
+import gruposAPI from "services/gruposAPI";
+import profesoresAPI from "services/profesoresAPI";
 
 const { Option } = Select;
 
-const TablaAdministradores = ({
-  needsRefresh,
-  setNeedsRefresh,
-  idCarrera = null,
-}) => {
+const TablaGrupos = ({cursoId = null, cicloId = null, needsRefresh, setNeedsRefresh}) => {
+  const backTo = "/ofertaAcademica"
   const [dataSource, setDataSource] = useState([]);
+  const [profesoresDataSource, setProfesoresDataSource] = useState([]);
   const [filterInput, setFilterInput] = useState("");
   const [guardarMethod, setGuardarMethod] = useState(null);
   const [state, setState] = useState({
     isLoading: false,
     isError: false,
   });
-  const [editingRow, setEditingRow] = useState(null);
 
-  const newUsuario = {
-    cedula: "",
-    clave: "",
-    rol: "Admin",
-  };
+  const newGrupo ={}
+
+  const [editingRow, setEditingRow] = useState(null);
 
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      isLoading: true,
-    }));
-    usuariosAPI()
-      .getAllAdmins()
-      .then((newUsuarios) => {
-        setDataSource(newUsuarios);
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-        }));
-      })
-      .catch((error) => {});
-  }, [needsRefresh]);
+  const filterData = () => {
+    const data = dataSource;
+    if (filterInput === "") return data;
+    else{
+      return data.filter(
+        (element)=> element.numeroGrupo.includes(filterInput)
+      )
+    }
+  }
 
-  const onFinishUpdate = () => {
+  const onFinishUpdate=()=>{
     const values = form.getFieldsValue();
-    usuariosAPI()
-      .updateUsuario({
-        id: editingRow,
-        cedula: values.cedula,
-        clave: values.clave,
-        rol: values.rol === "Admin" ? "1" : "2",
+    gruposAPI()
+      .updateGrupo({
+        id : editingRow,
+        numeroGrupo : values.numeroGrupo, 
+        cicloId : cicloId, 
+        cursoId : cursoId, 
+        profesorId : values.profesor, 
+        horario : values.horario
       })
       .then(() => {
         setState((prev) => ({
@@ -95,15 +76,17 @@ const TablaAdministradores = ({
             "El dato no fue actualizado. Por favor intente de nuevo.",
         });
       });
-  };
+  }
 
-  const onFinishPost = () => {
+  const onFinishPost = () =>{
     const values = form.getFieldsValue();
-    usuariosAPI()
-      .insertarUsuario({
-        cedula: values.cedula,
-        clave: values.clave,
-        rol: values.rol === "Admin" ? "1" : "2",
+    gruposAPI()
+      .insertarGrupo({
+        numeroGrupo : values.numeroGrupo, 
+        cicloId : cicloId, 
+        cursoId : cursoId, 
+        profesorId : values.profesor, 
+        horario : values.horario
       })
       .then(() => {
         notification.success({
@@ -133,38 +116,30 @@ const TablaAdministradores = ({
             "El dato no fue actualizado. Por favor intente de nuevo.",
         });
       });
-  };
+  }
 
   const onFinish = () => {
     form
-      .validateFields(["cedula", "clave", "rol"])
-      .then(() => {
-        if (guardarMethod === 1) {
-          onFinishUpdate();
-        } else {
-          onFinishPost()
-        }
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Datos inválidos",
-          description:
-            "El dato no fue actualizado. Por favor intente de nuevo.",
-        });
+    .validateFields(["numeroGrupo", "profesor", "horario"])
+    .then(() => {
+      if (guardarMethod === 1) {
+        onFinishUpdate();
+      } else {
+        onFinishPost()
+      }
+    })
+    .catch((error) => {
+      notification.error({
+        message: "Datos inválidos",
+        description:
+          "El dato no fue actualizado. Por favor intente de nuevo con todos los credenciales completos.",
       });
-  };
+    });
+  }
 
-  const filterData = () => {
-    const data = dataSource;
-
-    if (filterInput === "") return data;
-    else if(isNaN(filterInput)) return data;
-    else if (!isNaN(filterInput)) return data.filter((element)=>element.cedula.includes(filterInput))
-  };
-
-  const onDelete = (id) => {
-    usuariosAPI()
-      .removeUsuario(id)
+  const onDelete=(id)=>{
+    gruposAPI()
+      .removeGrupo(id)
       .then(() => {
         notification.success({
           message: "Actualización exitosa.",
@@ -180,30 +155,53 @@ const TablaAdministradores = ({
         notification.error({
           message: "Eliminación incorrecta",
           description:
-            "La carrera todavía está asociada a estudiantes y/o cursos. Por favor, remuévalos primero. ",
+            "El grupo todavía está asociado a matrículas. Debe desligarlo antes de eliminarlo. ",
         });
       });
-  };
+  }
+
+  useEffect(()=>{
+    console.log("curso: ", cursoId)
+    console.log("ciclo: ", cicloId)
+    setState((prev) => ({
+      ...prev,
+      isLoading: true,
+    }));
+    gruposAPI()
+    .getAllByCurso(cursoId, cicloId) /** Se sustituye por listar_ofertaAcademica_ciclo (?) Se ocupa conocer la carrera y el ciclo  */
+      .then((newData) => {
+        setDataSource(newData);
+        profesoresAPI()
+          .getAll()
+          .then((newProfesores) => {
+            newProfesores.forEach((element) => {
+              element.key = element.id;
+            });
+            setProfesoresDataSource(newProfesores);
+          })
+      })
+  },[needsRefresh])
 
   const columns = [
     {
       key: 1,
-      title: "Cedula",
-      dataIndex: "cedula",
+      width: "15%",
+      title: "Número de grupo",
+      dataIndex: "numeroGrupo",
       render: (text, record) => {
         if (editingRow === record.id) {
           return (
             <Form.Item
-              name="cedula"
+              name="numeroGrupo"
               hasFeedback
               rules={[
                 {
                   required: true,
-                  message: "Ingrese la cedula",
+                  message: "Digite un número de grupo",
                 },
               ]}
             >
-              <Input />
+             <Input />
             </Form.Item>
           );
         } else {
@@ -213,52 +211,51 @@ const TablaAdministradores = ({
     },
     {
       key: 2,
-      title: "Clave",
-      dataIndex: "clave",
+      title: "Profesor",
       render: (text, record) => {
         if (editingRow === record.id) {
           return (
             <Form.Item
-              name="clave"
-              hasFeedback
+              name="profesor"
               rules={[
                 {
                   required: true,
-                  message: "Ingrese la clave",
+                  message: "Seleccione un profesor",
                 },
               ]}
-              required
             >
-              <Input />
+              <Select>
+                {profesoresDataSource.map((profesor) => (
+                  <Option value={profesor.id}>
+                    {profesor.nombre}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           );
         } else {
-          return <p>{text}</p>;
+          return <p>{typeof(record.profesor) === "undefined" || typeof(record.profesor.nombre) === "undefined" ? "" : record.profesor.nombre}</p>;
         }
       },
     },
     {
       key: 3,
-      title: "Rol",
-      dataIndex: "rol",
+      title: "Horario",
+      dataIndex: "horario",
       render: (text, record) => {
         if (editingRow === record.id) {
           return (
             <Form.Item
-              name="rol"
+              name="horario"
               hasFeedback
               rules={[
                 {
                   required: true,
-                  message: "Elija un rol",
+                  message: "Digite el horario",
                 },
               ]}
-              required
             >
-              <Select>
-                <Option value="Admin">Administrador</Option>
-                <Option value="Matriculador">Matriculador</Option>
-              </Select>
+             <Input />
             </Form.Item>
           );
         } else {
@@ -268,24 +265,25 @@ const TablaAdministradores = ({
     },
     {
       title: "Acciones",
+      width: "20%",
       render: (_, record) => {
         return (
           <>
             <Button
               type="link"
               onClick={() => {
+                setEditingRow(record.id);
+                setGuardarMethod(1);
                 if (editingRow === null) {
-                  setEditingRow(record.id);
-                  setGuardarMethod(1);
                   form.setFieldsValue({
-                    cedula: record.cedula,
-                    clave: record.clave,
-                    rol: record.rol,
+                    numeroGrupo: record.numeroGrupo,
+                    profesor: record.profesor.id,
+                    horario: record.horario,
                   });
                 } else {
                   if (guardarMethod === 2) {
                     setDataSource(
-                      dataSource.filter((usuario) => usuario.id !== editingRow)
+                      dataSource.filter((profesor) => profesor.id !== editingRow)
                     );
                   }
                   form.resetFields();
@@ -303,7 +301,7 @@ const TablaAdministradores = ({
               type="link"
               onClick={onFinish}
               hidden={
-                editingRow === null
+                 editingRow === null
                   ? true
                   : editingRow === record.id
                   ? false
@@ -313,12 +311,15 @@ const TablaAdministradores = ({
               Guardar
             </Button>
             <Popconfirm
-              title="¿Está seguro que desea borrar esta carrera?"
+              title="¿Está seguro que desea borrar este curso?"
               onConfirm={() => onDelete(record.id)}
               okText="Sí"
               cancelText="No"
             >
-              <Button danger type="link">
+              <Button
+                danger
+                type="link"
+              >
                 Borrar
               </Button>
             </Popconfirm>
@@ -331,7 +332,7 @@ const TablaAdministradores = ({
   return (
     <Col span="24" style={{ minHeight: "470px", height: "100%" }}>
       <TableHeader
-        title={"Usuario"}
+        title={"Grupo"}
         setFilterInput={setFilterInput}
         dataSource={dataSource}
         setDataSource={setDataSource}
@@ -339,9 +340,9 @@ const TablaAdministradores = ({
         editingRow={editingRow}
         setEditingRow={setEditingRow}
         setGuardarMethod={setGuardarMethod}
-        placeholder={"Buscar por cedula o por rol"}
-        newObject={newUsuario}
-        backButton={null}
+        placeholder={"Buscar por número de grupo"}
+        newObject={newGrupo}
+        backButton={backTo}
       />
       <Form form={form}>
         <Table columns={columns} dataSource={filterData()}></Table>
@@ -350,4 +351,4 @@ const TablaAdministradores = ({
   );
 };
 
-export default TablaAdministradores;
+export default TablaGrupos;

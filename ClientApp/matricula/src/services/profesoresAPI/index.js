@@ -69,7 +69,11 @@ function eliminarProfesor({id}) {
 }
 
 
-
+function getAll() {
+  return fetch(`${API_URL}/profesor`,{
+      method:'GET'
+  }).then(res => res.json())
+}
 
 
 function profesoresAPI() {
@@ -78,7 +82,8 @@ function profesoresAPI() {
     buscarProfesor,
     addProfesor,
     modificarProfesor,
-    eliminarProfesor
+    eliminarProfesor,
+    getAll
   }
 }
 

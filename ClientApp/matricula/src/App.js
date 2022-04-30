@@ -20,6 +20,9 @@ import MantenimientoProfesores from "pages/MantenimientoProfesores";
 import RegistrarNotas from "pages/RegistrarNotas";
 import MantenimientoAlumnos from "pages/MantenimientoAlumnos";
 import HistorialAlumno from "components/HistorialAlumno";
+import MantenimientoGrupos from "pages/MantGrupos";
+import OfertaAcademica from "pages/OfertaAcademica";
+import PaginaOferta from "pages/PaginaOferta";
 
 function App() {
   return (
@@ -40,8 +43,11 @@ function App() {
                   <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/ciclos" component={MantenimientoCiclos} />
                   <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/usuarios" component={MantenimientoAdministradores}/>
                   <RutaPrivada rolesPermitidos={["Profesor"]} exact path="/misGrupos" component={GruposProfesor}/>
-                  <RutaPrivada rolesPermitidos={["Administrador"]} path="/cursos/:id" component={MantenimientoCursos} />
+                  <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/cursos/:id" component={MantenimientoCursos} />
+                  <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/cursos/:id/ciclo/:cicloId" component={MantenimientoCursos} />
                   <RutaPrivada rolesPermitidos={["Profesor"]} exact path="/misGrupos/:id" component={RegistrarNotas}/>
+                  <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/grupos/:cursoId/:cicloId" component={MantenimientoGrupos}/>
+                  <RutaPrivada rolesPermitidos={["Administrador"]} exact path="/ofertaAcademica" component={PaginaOferta}/>
                   <Route path={"*"} component={() => <h1>Not found</h1>} />
                 </Switch>
               </MainLayout>

@@ -30,7 +30,9 @@ public class RegisterApp extends Application {
         classes.add(GrupoController.class);
         classes.add(MatriculaController.class);
         classes.add(UsuarioController.class);
-
+        classes.add(PlanDeEstudioController.class);
+        classes.add(OfertaAcademicaController.class);
+        
         return classes;
     }   
 }

@@ -14,7 +14,7 @@ function MainLayout({ children }) {
     <Layout style={{ height: "100vh" }}>
       <NavigationSider />
       <Content className="mainContent" style={{ backgroundColor: "rgb(240,240,240)", padding: '20px', height: '100%', display: "flex", flexDirection: "column" }}>
-        <ContentHeader title="Home Page" />
+        
         <Card
           bordered={false}
           className="pageContent"
